@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. Bintang Abadi — Ambulance Service 24 Jam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+    <style>
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse-ring{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        @keyframes siren{0%,100%{box-shadow:0 0 10px rgba(220,38,38,.4)}50%{box-shadow:0 0 25px rgba(220,38,38,.9),0 0 50px rgba(59,130,246,.4)}}
+        @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @keyframes slide-in-right{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes blink-light{0%,100%{opacity:1}50%{opacity:.2}}
+        @keyframes data-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        @keyframes photo-flash{0%{opacity:.3;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+        .anim-fade{animation:fadeInUp .8s ease-out forwards}
+        .anim-d1{animation-delay:.1s;opacity:0}.anim-d2{animation-delay:.2s;opacity:0}.anim-d3{animation-delay:.3s;opacity:0}.anim-d4{animation-delay:.4s;opacity:0}.anim-d5{animation-delay:.5s;opacity:0}
+        .anim-float{animation:float 3s ease-in-out infinite}
+        .anim-siren{animation:siren 1.5s ease-in-out infinite}
+        .anim-marquee{animation:marquee 25s linear infinite}
+        .blink-light{animation:blink-light .8s ease-in-out infinite}
+        .glass{background:rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18)}
+        .siren-dot{position:relative}.siren-dot::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:#DC2626;animation:pulse-ring 1.5s ease-out infinite}
+        .sr{opacity:0;transform:translateY(30px);transition:all .8s ease-out}.sr.revealed{opacity:1;transform:translateY(0)}
+        .tab-active{background:#082F49!important;color:#fff!important}
+        .shift-active{background:#22c55e!important;color:#fff!important;border-color:#22c55e!important}
+        .toast{animation:slide-in-right .4s ease-out forwards}
+        ::-webkit-scrollbar{width:7px}::-webkit-scrollbar-track{background:#F1F5F9}::-webkit-scrollbar-thumb{background:#94A3B8;border-radius:4px}
+        .amb-svg{filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+        .online-badge{position:absolute;bottom:2px;right:2px;width:14px;height:14px;background:#22c55e;border:2.5px solid white;border-radius:50%;z-index:2}
+        .wa-float{position:fixed;bottom:24px;right:24px;z-index:80;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:all .3s;cursor:pointer}
+        .wa-float:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(37,211,102,.5)}
+        .shift-tag{font-size:10px;padding:2px 8px;border-radius:9999px;font-weight:600;letter-spacing:.03em}
+        .data-badge{position:fixed;bottom:24px;left:24px;z-index:80;padding:6px 14px;border-radius:9999px;font-size:11px;font-weight:600;backdrop-filter:blur(8px);cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px}
+        .data-badge:hover{transform:scale(1.05)}
+        .data-badge.just-updated{animation:data-pulse .6s ease 3}
+        .doc-photo-new{animation:photo-flash .6s ease-out}
+        .amb-card-img{width:100%;height:100%;object-fit:contain;object-position:center;transition:transform .5s}
+        .amb-card-wrap:hover .amb-card-img{transform:scale(1.03)}
+        .amb-card-visual{position:relative;background:#F1F5F9;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .amb-card-visual img{display:block}
+        .amb-card-visual .badge-layer{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+        .rs-card-visual{position:relative;overflow:hidden}
+        .rs-card-visual img.rs-real-img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+        .rs-card-wrap:hover .rs-real-img{transform:scale(1.05)}
+        .rs-card-visual .rs-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+        .rs-card-visual .rs-badge-layer{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;padding:12px}
+        .rs-new-img{animation:photo-flash .7s ease-out}
+    </style>
+</head>
+<body class="font-sans bg-white text-slate-900 antialiased">
+
+<div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3"></div>
+<div id="data-badge" class="data-badge bg-amber-100 text-amber-700 border border-amber-200" onclick="forceRefresh()" title="Klik untuk refresh data dari Admin"></div>
+
+<a href="https://wa.me/6285176920291?text=Halo%20PT%20Bintang%20Abadi%2C%20saya%20ingin%20memesan%20ambulans" target="_blank" class="wa-float" title="Chat WhatsApp">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- NAV -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a href="#" class="flex items-center gap-3">
+            <img src="bintanglogo.png" alt="Logo" class="company-logo w-11 h-11 rounded-xl object-cover" onerror="this.outerHTML='<div class=\'w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center anim-siren\'><svg class=\'w-6 h-6 text-white\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\'><path d=\'M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4\'/><circle cx=\'18\' cy=\'16\' r=\'2\'/><circle cx=\'6\' cy=\'18\' r=\'2\'/></svg></div>'">
+            <div class="leading-tight"><span class="text-lg font-bold text-white block">Bintang Abadi</span><span class="text-[10px] text-red-400 font-medium uppercase tracking-wider">Ambulance Service</span></div>
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+            <a href="#layanan" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Layanan</a>
+            <a href="#order" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Pesan Ambulans</a>
+            <a href="#dokter" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Dokter Siaga</a>
+            <a href="#rumahsakit" class="text-sm font-medium text-white/80 hover:text-white transition-colors">RS Mitra</a>
+            <a href="#visi" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Tentang Kami</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="tel:085176920291" class="hidden md:flex items-center gap-2 text-white text-sm font-medium bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>0851-7692-0291</a>
+            <button onclick="openOrderModal()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all hover:shadow-lg hover:shadow-red-600/30">Panggil Sekarang</button>
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-white"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="lg:hidden hidden bg-sky-950/95 backdrop-blur-md border-t border-white/10">
+        <div class="px-6 py-6 flex flex-col gap-4">
+            <a href="#layanan" onclick="closeMobileMenu()" class="text-white/80 hover:text-white py-2">Layanan</a>
+            <a href="#order" onclick="closeMobileMenu()" class="text-white/80 hover:text-white py-2">Pesan Ambulans</a>
+            <a href="#dokter" onclick="closeMobileMenu()" class="text-white/80 hover:text-white py-2">Dokter Siaga</a>
+            <a href="#rumahsakit" onclick="closeMobileMenu()" class="text-white/80 hover:text-white py-2">RS Mitra</a>
+            <a href="#visi" onclick="closeMobileMenu()" class="text-white/80 hover:text-white py-2">Tentang Kami</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="relative min-h-[900px] flex items-center overflow-hidden">
+    <div class="absolute inset-0"><img src="https://static.arenalte.com/uploads/2017/06/IoMT-internet-of-medical-things.jpg" class="w-full h-full object-cover" alt="Ambulance"><div class="absolute inset-0 bg-gradient-to-r from-sky-950 via-sky-950/90 to-sky-950/30"></div><div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-transparent to-transparent"></div></div>
+    <div class="absolute top-1/4 right-1/4 w-72 h-72 bg-red-500/10 rounded-full blur-3xl"></div>
+    <div class="relative max-w-7xl mx-auto px-6 pt-20 w-full">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <div class="anim-fade"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-600/20 border border-red-500/30 mb-8"><span class="w-2 h-2 bg-red-500 rounded-full siren-dot"></span><span class="text-red-400 text-xs font-semibold uppercase tracking-wider">PT. Bintang Abadi — Siaga 24 Jam</span></div></div>
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.05] anim-fade anim-d1">Layanan<br><span class="text-red-500">Ambulance</span><br>Terpercaya di Bali</h1>
+                <p class="text-lg text-slate-300 leading-relaxed mt-8 max-w-lg anim-fade anim-d2">Pengangkutan jenazah, ambulance darurat, ICU mobile, dan neonatal. Melayani dalam kota, antar pulau, hingga cargo udara.</p>
+                <div class="flex flex-wrap gap-4 mt-10 anim-fade anim-d3">
+                    <button onclick="openOrderModal()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-red-600/30 flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="18" r="2"/></svg>Pesan Ambulans</button>
+                    <a href="https://wa.me/6285176920291" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-green-600/30 flex items-center gap-2">WhatsApp Kami</a>
+                </div>
+                <div class="grid grid-cols-3 gap-6 mt-14 anim-fade anim-d4">
+                    <div><div class="text-3xl font-bold text-white">15<span class="text-red-500">min</span></div><div class="text-xs text-slate-400 mt-1">Rata-rata Tiba</div></div>
+                    <div><div class="text-3xl font-bold text-white">50K<span class="text-red-500">+</span></div><div class="text-xs text-slate-400 mt-1">Misi Berhasil</div></div>
+                    <div><div class="text-3xl font-bold text-white">24/7</div><div class="text-xs text-slate-400 mt-1">Selalu Siaga</div></div>
+                </div>
+            </div>
+           <div class="hidden lg:flex justify-center anim-fade anim-d5">
+    <div class="relative anim-float">
+        <!-- GANTI SRC DI BAWAH INI DENGAN PATH GAMBAR AMBULANS ANDA -->
+        <img 
+            src="gambar Pelayanan Kami/rute.png" 
+            alt="Ambulans Bintang Abadi" 
+            class="amb-svg w-[720px] h-[480px] object-contain rounded-2xl"
+        >
+        
+        <!-- Badge Unit Aktif -->
+        <div class="absolute -top-4 -right-4 glass rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-white text-sm font-semibold" id="hero-unit-count">5 Unit</div>
+                <div class="text-green-400 text-xs">Ambulans Aktif</div>
+            </div>
+        </div>
+
+        <!-- Badge Dokter Online -->
+        <div class="absolute -bottom-4 -left-4 glass rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-white text-sm font-semibold" id="hero-doc-count">20 Dokter</div>
+                <div class="text-blue-400 text-xs">Online Hari Ini</div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</section>
+
+<!-- STRIP -->
+<div class="bg-red-600 py-4 overflow-hidden"><div class="flex gap-12 anim-marquee whitespace-nowrap">
+    <span class="text-white font-medium text-sm">HUBUNGI 0851-7692-0291</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">PENGANGKUTAN JENAZAH 24 JAM</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">JL. PULAU BATAM, TABANAN, BALI</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">ANTAR PULAU & CARGO UDARA</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">RS MITRA MENYEDIAKAN PETI MATI</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">HUBUNGI 0851-7692-0291</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">PENGANGKUTAN JENAZAH 24 JAM</span><span class="text-white/60">•</span>
+    <span class="text-white font-medium text-sm">JL. PULAU BATAM, TABANAN, BALI</span>
+</div></div>
+
+<!-- VISI MISI -->
+<section id="visi" class="py-24 bg-white"><div class="max-w-7xl mx-auto px-6"><div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="sr"><div class="relative"><img src="gambar Pelayanan Kami/hero.png" alt="Tim"><div class="absolute -bottom-6 -right-6 bg-red-600 text-white p-6 rounded-2xl shadow-xl"><div class="text-4xl font-bold">9+</div><div class="text-sm text-red-100">Tahun Melayani</div></div></div></div>
+    <div class="sr">
+        <span class="text-xs font-semibold uppercase tracking-wider text-red-600">Tentang Kami</span>
+        <h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4">PT. Bintang Abadi<br>Ambulance Service</h2>
+        <p class="text-slate-500 leading-relaxed mt-4">Perusahaan resmi di <strong>Jl. Pulau Batam, Tabanan, Bali</strong>. Melayani pengangkutan jenazah 24 jam, ambulance darurat, antar pulau, dan cargo udara.</p>
+        <div class="mt-8 space-y-5">
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center"><svg class="w-5 h-5 text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><h3 class="text-lg font-semibold text-sky-950">Visi</h3></div><p class="text-slate-600 leading-relaxed">Menjadi layanan ambulance terpercaya di Indonesia yang mengutamakan kecepatan, ketepatan, dan penghormatan dalam setiap pelayanan.</p></div>
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center"><svg class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><h3 class="text-lg font-semibold text-sky-950">Misi</h3></div>
+                <ul class="text-slate-600 leading-relaxed space-y-2">
+                    <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-500 mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Respons ambulance kurang dari 15 menit</li>
+                    <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-500 mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pengangkutan jenazah penuh penghormatan</li>
+                    <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-500 mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pengiriman antar pulau & cargo udara aman</li>
+                    <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-500 mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Tim medis tersertifikasi di setiap unit</li>
+                    <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-500 mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Jaringan RS terbaik dengan penyediaan peti mati</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div></div></section>
+
+<!-- LAYANAN -->
+<section id="layanan" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center sr">
+            <span class="text-xs font-semibold uppercase tracking-wider text-red-600">Pelayanan Kami</span>
+            <h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4 drop-shadow-sm">Layanan Sesuai Visi & Misi</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+
+            <!-- Layanan 1: Ambulans Darurat -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]
+                        hover:shadow-[inset_12px_12px_24px_#d1d5db,inset_-12px_-12px_24px_#ffffff]">
+                
+                <!-- Gambar Langsung (Tanpa Box Pembungkus) -->
+                <img src="https://media.indozone.id/crop/0x0:0x0/images/2026/03/17/1773746524_69b9395c05c71_download_emergency_services_at_hospital_entrance_with_ambulance_at_dusk_for_free.jpeg" alt="Ambulans Darurat" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Ambulans Darurat</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Respons kurang dari 15 menit. Peralatan BLS/ALS dan tim paramedis tersertifikasi.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">BLS</span>
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">ALS</span>
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">24 Jam</span>
+                </div>
+            </div>
+
+            <!-- Layanan 2: Ambulans Jenazah (UTAMA) -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#fca5a5,inset_-8px_-8px_16px_#ffffff]
+                        border border-red-100">
+                <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-md z-10">UTAMA</div>
+                
+                <!-- Gambar Langsung -->
+                <img src="gambar Pelayanan Kami/hero.png" alt="Ambulans Jenazah" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Ambulans Jenazah 24 Jam</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Layanan utama. Pengangkutan jenazah penuh penghormatan, steril, dan profesional sepanjang waktu.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">24 Jam</span>
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">Steril</span>
+                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">Profesional</span>
+                </div>
+            </div>
+
+            <!-- Layanan 3: Pengiriman Antar Pulau -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
+                
+                <!-- Gambar Langsung -->
+                <img src="gambar Pelayanan Kami/rute.png" alt="Pengiriman Antar Pulau" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Pengiriman Antar Pulau</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Pengangkutan jenazah via kapal laut. Dokumen lengkap dan pengawasan ketat selama perjalanan.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium drop-shadow-sm">Dokumen Lengkap</span>
+                    <span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium drop-shadow-sm">Antar Pulau</span>
+                </div>
+            </div>
+
+            <!-- Layanan 4: Cargo Udara -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
+                
+                <!-- Gambar Langsung -->
+                <img src="https://www.efratfuneral.com/~img/cargo_jenazah-3d186-3525_167-twebp80.webp" alt="Cargo Udara" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Cargo Udara</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Pengiriman jenazah via pesawat ke seluruh Indonesia. Koordinasi maskapai dan bandara.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium drop-shadow-sm">Seluruh Indonesia</span>
+                    <span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium drop-shadow-sm">Maskapai</span>
+                </div>
+            </div>
+
+            <!-- Layanan 5: ICU Mobile -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
+                
+                <!-- Gambar Langsung -->
+                <img src="https://media.licdn.com/dms/image/v2/D5612AQE-fHInA5SIHg/article-inline_image-shrink_400_744/B56ZieQSQQHUAg-/0/1755001728983?e=2147483647&v=beta&t=V5hcQJa9lLtdzysyCEikKGB9jodxoHVrNA6iiwJQ-EA" alt="ICU Mobile" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">ICU Mobile</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">ICU bergerak: ventilator, monitor EKG, dan dokter spesialis untuk pasien kritis.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium drop-shadow-sm">Ventilator</span>
+                    <span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium drop-shadow-sm">Spesialis</span>
+                </div>
+            </div>
+
+            <!-- Layanan 6: Penyediaan Peti Mati -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
+                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
+                
+                <!-- Gambar Langsung -->
+                <img src="https://rumahmebel.id/wp-content/uploads/2022/10/Peti-Mati-Biru-Stanford.webp" alt="Penyediaan Peti Mati" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
+
+                <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Penyediaan Peti Mati</h3>
+                <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Kerjasama dengan RS mitra menyediakan peti mati berbagai jenis. Tersedia di lokasi RS tujuan.</p>
+                
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium drop-shadow-sm">Berbagai Jenis</span>
+                    <span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium drop-shadow-sm">Tersedia di RS</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ORDER -->
+<section id="order" class="py-24 bg-white"><div class="max-w-7xl mx-auto px-6">
+    <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Pesan Sekarang</span><h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4">Pilih Jenis Ambulans</h2><p class="text-slate-500 leading-relaxed mt-4 max-w-2xl mx-auto">Klik untuk langsung memesan. Hubungi kami untuk informasi biaya.</p></div>
+    <div class="grid md:grid-cols-2 gap-8 mt-16" id="amb-cards"></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8" id="amb-extra"></div>
+</div></section>
+
+<!-- DOKTER -->
+<section id="dokter" class="py-24 bg-sky-950"><div class="max-w-7xl mx-auto px-6">
+    <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-400">Jadwal Real-Time</span><h2 class="text-3xl md:text-4xl font-semibold text-white tracking-tight mt-4">Dokter Siaga Sekarang</h2><p class="text-slate-400 leading-relaxed mt-4 max-w-2xl mx-auto">Jadwal berganti per shift (pagi/siang/malam). Titik hijau = sedang bertugas.</p></div>
+    <div class="flex flex-wrap justify-center gap-2 mt-4 sr" id="day-tabs"></div>
+    <div class="flex flex-wrap justify-center gap-2 mt-3 sr" id="shift-tabs"></div>
+    <div id="doc-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10"></div>
+    <div class="text-center mt-6 sr" id="clock-display"></div>
+</div></section>
+
+<!-- RS MITRA -->
+<section id="rumahsakit" class="py-24 bg-white"><div class="max-w-7xl mx-auto px-6">
+    <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Jaringan Kami</span><h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4">Rumah Sakit Mitra</h2><p class="text-slate-500 leading-relaxed mt-4 max-w-2xl mx-auto">Setiap RS memiliki dokter penanggung jawab dari Bintang Abadi.</p></div>
+    <div class="flex flex-wrap justify-center gap-2 mt-12 sr" id="rs-filters"></div>
+    <div id="rs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10"></div>
+</div></section>
+
+<!-- TESTIMONI -->
+<section class="py-24 bg-slate-50"><div class="max-w-7xl mx-auto px-6">
+    <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Testimoni</span><h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4">Kata Mereka</h2></div>
+    <div class="grid md:grid-cols-3 gap-8 mt-16">
+        <div class="sr bg-white rounded-2xl p-8 border border-slate-100 hover:shadow-xl transition-all"><div class="flex gap-1 mb-4"><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div><p class="text-slate-600 leading-relaxed">"Pengangkutan jenazah ayah dari Tabanan ke Surabaya lancar. Tim sangat sopan. Dokumen antar pulau diurus semua."</p><div class="flex items-center gap-3 mt-6 pt-6 border-t border-slate-100"><img src="https://i.pravatar.cc/80?img=12" class="w-10 h-10 rounded-full" alt=""><div><div class="font-semibold text-sky-950 text-sm">Made Sudiarta</div><div class="text-xs text-slate-400">Tabanan, Bali</div></div></div></div>
+        <div class="sr bg-white rounded-2xl p-8 border border-slate-100 hover:shadow-xl transition-all"><div class="flex gap-1 mb-4"><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div><p class="text-slate-600 leading-relaxed">"Ibu serangan jantung malam-malam, ambulance datang 12 menit. Dokter jantung langsung menangani di jalan!"</p><div class="flex items-center gap-3 mt-6 pt-6 border-t border-slate-100"><img src="https://i.pravatar.cc/80?img=32" class="w-10 h-10 rounded-full" alt=""><div><div class="font-semibold text-sky-950 text-sm">Ni Ketut Ari</div><div class="text-xs text-slate-400">Denpasar, Bali</div></div></div></div>
+        <div class="sr bg-white rounded-2xl p-8 border border-slate-100 hover:shadow-xl transition-all"><div class="flex gap-1 mb-4"><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div><p class="text-slate-600 leading-relaxed">"Cargo udara jenazah ke Jakarta diurus cepat. Semua izin maskapai ditangani. Profesional!"</p><div class="flex items-center gap-3 mt-6 pt-6 border-t border-slate-100"><img src="https://i.pravatar.cc/80?img=55" class="w-10 h-10 rounded-full" alt=""><div><div class="font-semibold text-sky-950 text-sm">Wayan Gede</div><div class="text-xs text-slate-400">Gianyar, Bali</div></div></div></div>
+    </div>
+</div></section>
+
+<!-- CTA -->
+<section class="relative py-24 overflow-hidden"><div class="absolute inset-0"><img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1920&q=80" class="w-full h-full object-cover" alt=""><div class="absolute inset-0 bg-sky-950/90"></div></div>
+<div class="relative max-w-4xl mx-auto px-6 text-center sr"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-600/20 border border-red-500/30 mb-8"><span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span><span class="text-red-400 text-xs font-semibold uppercase tracking-wider">Jangan Tunda</span></div><h2 class="text-3xl md:text-5xl font-semibold text-white tracking-tight">Setiap Detik Berharga bagi Nyawa</h2><p class="text-slate-300 text-lg leading-relaxed mt-6 max-w-2xl mx-auto">Hubungi kami sekarang. PT. Bintang Abadi siap 24 jam.</p>
+    <div class="flex flex-wrap justify-center gap-4 mt-10"><button onclick="openOrderModal()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-red-600/30">Pesan Ambulans Online</button><a href="https://wa.me/6285176920291" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-green-600/30">WhatsApp 0851-7692-0291</a></div>
+</div></section>
+
+<!-- FOOTER -->
+<footer class="bg-sky-950 pt-20 pb-8"><div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-white/10">
+        <div><div class="flex items-center gap-3 mb-6"><img src="bintanglogo.png" alt="Logo" class="footer-logo w-11 h-11 rounded-xl object-cover" onerror="this.outerHTML='<div class=\'w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center\'><svg class=\'w-6 h-6 text-white\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\'><path d=\'M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4\'/><circle cx=\'18\' cy=\'16\' r=\'2\'/><circle cx=\'6\' cy=\'18\' r=\'2\'/></svg></div>'"><div class="leading-tight"><span class="text-lg font-bold text-white block">Bintang Abadi</span><span class="text-[10px] text-red-400 font-medium uppercase tracking-wider">Ambulance Service</span></div></div><p class="text-slate-400 text-sm leading-relaxed">PT. Bintang Abadi — Layanan ambulance & pengangkutan jenazah 24 jam di Bali.</p></div>
+        <div><h4 class="text-white font-semibold mb-6">Layanan</h4><ul class="space-y-3"><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Ambulans Jenazah 24 Jam</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Pengangkutan Dalam Kota</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Pengiriman Antar Pulau</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Cargo Udara</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">ICU Mobile</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Penyediaan Peti Mati</a></li></ul></div>
+        <div><h4 class="text-white font-semibold mb-6">Informasi</h4><ul class="space-y-3"><li><a href="#visi" class="text-slate-400 text-sm hover:text-white transition-colors">Tentang Kami</a></li><li><a href="#rumahsakit" class="text-slate-400 text-sm hover:text-white transition-colors">RS Mitra</a></li><li><a href="#dokter" class="text-slate-400 text-sm hover:text-white transition-colors">Jadwal Dokter</a></li></ul></div>
+        <div><h4 class="text-white font-semibold mb-6">Kontak</h4><div class="space-y-4"><a href="tel:085176920291" class="flex items-center gap-3 text-red-400 font-semibold hover:text-red-300 transition-colors"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>0851-7692-0291</a><a href="mailto:24jambintangabadi@gmail.com" class="flex items-center gap-3 text-slate-400 text-sm hover:text-white transition-colors"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>24jambintangabadi@gmail.com</a><div class="flex items-start gap-3 text-slate-400 text-sm"><svg class="w-4 h-4 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Jl. Pulau Batam, Tabanan, Bali</div></div></div>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between items-center pt-8 gap-4"><p class="text-slate-500 text-sm">&copy; 2024 PT. Bintang Abadi Ambulance Service</p><p class="text-slate-600 text-xs">Ambulance Jenazah 24 Jam — Dalam Kota, Antar Pulau & Cargo Udara</p></div>
+</div></footer>
+
+<!-- ORDER MODAL -->
+<div id="order-modal" class="fixed inset-0 z-[90] hidden"><div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeOrderModal()"></div>
+<div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"><div class="p-6 md:p-8">
+    <div class="flex items-center justify-between mb-6"><div><h3 class="text-xl font-semibold text-sky-950">Pesan Ambulans</h3><p class="text-sm text-slate-500 mt-1">PT. Bintang Abadi — Tabanan, Bali</p></div><button onclick="closeOrderModal()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"><svg class="w-5 h-5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <form id="order-form" onsubmit="submitOrder(event)" class="space-y-5">
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">Jenis Layanan *</label><select id="form-type" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm"><option value="">Pilih jenis layanan</option></select></div>
+        <div class="grid md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Pemesan *</label><input type="text" id="form-name" required placeholder="Nama lengkap" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm"></div><div><label class="block text-sm font-medium text-slate-700 mb-1.5">No. Telepon *</label><input type="tel" id="form-phone" required placeholder="08xxxxxxxxxx" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm"></div></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">Lokasi Penjemputan *</label><textarea id="form-location" required rows="2" placeholder="Alamat lengkap" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm resize-none"></textarea></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">Lokasi Tujuan</label><textarea id="form-dest" rows="2" placeholder="Untuk antar pulau/cargo udara" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm resize-none"></textarea></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">RS Tujuan</label><select id="form-rs" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm"><option value="">Pilih RS (opsional)</option></select></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">Keterangan</label><textarea id="form-note" rows="2" placeholder="Kondisi pasien / info jenazah" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-sm resize-none"></textarea></div>
+        <button type="submit" id="submit-btn" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl text-sm font-semibold transition-all hover:shadow-lg hover:shadow-red-600/30">Konfirmasi Pesanan</button>
+    </form>
+</div></div></div>
+
+<!-- DETAIL MODAL -->
+<div id="detail-modal" class="fixed inset-0 z-[90] hidden"><div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailModal()"></div>
+<div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"><div id="detail-content" class="p-6 md:p-8"></div></div></div>
+
+<script>
+var DN=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+var SHIFTS=[{label:'Pagi',from:7,to:14,color:'bg-amber-100 text-amber-700'},{label:'Siang',from:14,to:21,color:'bg-blue-100 text-blue-700'},{label:'Malam',from:21,to:7,color:'bg-indigo-100 text-indigo-700'}];
+var STORAGE_KEY='bintang_admin',CHANNEL_NAME='bintang_sync',dataVersion=Date.now();
+
+/* ===== Helper: ambil gambar RS dari data admin ===== */
+function rsImage(h){
+    if(h.image && h.image.length > 10){
+        if(h.image.startsWith('data:')) return h.image;
+        var x = h.image.indexOf('?') !== -1 ? '&' : '?';
+        return h.image + x + 'v=' + dataVersion;
+    }
+    return null;
+}
+
+function docPhoto(d,s){if(d.image&&d.image.length>10){if(d.image.startsWith('data:'))return d.image;var x=d.image.indexOf('?')!==-1?'&':'?';return d.image+x+'v='+dataVersion;}return'https://i.pravatar.cc/'+s+'?img='+(d.av||1);}
+function loadAdminData(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var d=JSON.parse(r);if(d&&d.doctors&&d.doctors.length&&d.hospitals&&d.hospitals.length)return d;}}catch(e){}return null;}
+var _adminData=loadAdminData(),_fromAdmin=_adminData!==null;
+var _fallbackDoctors=[
+{id:1,name:"dr. Andi Pratama, Sp.PD",specialty:"Penyakit Dalam",av:11,sip:"503/01/DKI/2024/001",shifts:[[0,0],[0,1],[2,0],[2,1],[4,0],[4,1]],rs:"RS Bali Mandara",task:"Dokter penanggung jawab IGD dan konsultasi telemedicine.",c:"red"},
+{id:2,name:"dr. Bunga Lestari, Sp.OG",specialty:"Obstetri & Ginekologi",av:5,sip:"503/01/DKI/2024/002",shifts:[[1,0],[1,2],[3,0],[3,1],[5,0],[5,2]],rs:"RS Bunda Denpasar",task:"Penanganan darurat kehamilan dan ambulans neonatal.",c:"pink"},
+{id:3,name:"dr. Cahyo Wibowo, Sp.BS",specialty:"Bedah Saraf",av:14,sip:"503/01/DKI/2024/003",shifts:[[2,1],[2,2],[4,1],[4,2],[6,0],[6,1]],rs:"RS Sanglah Denpasar",task:"Trauma kepala, stroke hemoragik, rujukan bedah saraf.",c:"blue"},
+{id:4,name:"dr. Dewi Sartika, Sp.A",specialty:"Anak",av:9,sip:"503/01/DKI/2024/004",shifts:[[0,1],[0,2],[3,0],[3,2],[5,1],[5,2]],rs:"RS Harapan Bunda Bali",task:"Penanganan darurat anak dan ambulans neonatal.",c:"green"},
+{id:5,name:"dr. Eko Prasetyo, Sp.JP",specialty:"Jantung",av:15,sip:"503/01/DKI/2024/005",shifts:[[1,1],[1,2],[4,0],[4,2],[6,1],[6,2]],rs:"RS Jantung Denpasar",task:"Serangan jantung akut dan ambulans ICU kardiak.",c:"red"},
+{id:6,name:"dr. Fitri Handayani, Sp.OT",specialty:"Ortopedi",av:25,sip:"503/01/DKI/2024/006",shifts:[[0,0],[0,2],[1,0],[1,1],[3,0],[3,1],[5,0],[5,1]],rs:"RS Bali Royal",task:"Fraktur dan evakuasi medis kecelakaan.",c:"amber"},
+{id:7,name:"dr. Gunawan, Sp.PD-KR",specialty:"Reumatologi",av:33,sip:"503/01/DKI/2024/007",shifts:[[2,0],[2,2],[3,2],[6,0],[6,2]],rs:"RS Wangaya",task:"Konsultasi telemedicine penyakit autoimun.",c:"purple"},
+{id:8,name:"dr. Hana Permata, Sp.An",specialty:"Anestesiologi",av:20,sip:"503/01/DKI/2024/008",shifts:[[0,1],[0,2],[2,1],[2,2],[4,0],[4,1],[4,2],[6,0],[6,2]],rs:"RS Tabanan",task:"Jalan napas darurat dan sedasi ambulans ICU.",c:"teal"},
+{id:9,name:"dr. Ivan Kurniawan, Sp.THT",specialty:"THT-KL",av:52,sip:"503/01/DKI/2024/009",shifts:[[1,0],[1,1],[3,1],[3,2],[5,0],[5,1]],rs:"RS Primaya Bali",task:"Pendarahan THT darurat dan benda asing.",c:"blue"},
+{id:10,name:"dr. Julia Rahma, Sp.KK",specialty:"Kulit & Kelamin",av:44,sip:"503/01/DKI/2024/010",shifts:[[0,0],[0,1],[4,1],[4,2],[6,0],[6,1]],rs:"RS BIMC Bali",task:"Luka bakar berat dan anafilaksis.",c:"pink"},
+{id:11,name:"dr. Kevin Mahendra, Sp.U",specialty:"Urologi",av:53,sip:"503/01/DKI/2024/011",shifts:[[2,0],[2,1],[5,0],[5,1],[5,2],[6,0]],rs:"RS Kasih Ibu",task:"Kolik renal dan trauma urogenital darurat.",c:"green"},
+{id:12,name:"dr. Lisa Anggraini, Sp.M",specialty:"Mata",av:47,sip:"503/01/DKI/2024/012",shifts:[[1,0],[1,2],[4,0],[4,2],[5,1]],rs:"RS Mata Bali",task:"Trauma mata, benda asing kornea.",c:"purple"},
+{id:13,name:"dr. Made Suarjaya, Sp.EM",specialty:"Emergency Medicine",av:60,sip:"503/02/BAL/2024/001",shifts:"24h",rs:"RS Sanglah Denpasar",task:"Konsultan utama emergency 24 jam. Koordinasi BPBD.",c:"red"},
+{id:14,name:"dr. Nyoman Sudiarta, Sp.P",specialty:"Patologi Klinik",av:68,sip:"503/02/BAL/2024/002",shifts:[[0,0],[0,1],[3,0],[3,1],[5,0],[5,1]],rs:"RS Bali Mandara",task:"Laboratorium darurat mobile.",c:"amber"},
+{id:15,name:"dr. Putu Ariati, Sp.Rad",specialty:"Radiologi",av:26,sip:"503/02/BAL/2024/003",shifts:[[1,0],[1,1],[2,1],[2,2],[4,1],[4,2],[6,0],[6,1]],rs:"RS Wangaya",task:"Interpretasi X-ray dan USG di medan.",c:"blue"},
+{id:16,name:"dr. Rina Wulandari, Sp.FK",specialty:"Forensik",av:38,sip:"503/02/BAL/2024/004",shifts:"24h",rs:"RS Sanglah Denpasar",task:"Dokter forensik pengangkutan jenazah 24 jam.",c:"slate"},
+{id:17,name:"dr. Komang Surya, Sp.An",specialty:"Anestesiologi",av:57,sip:"503/02/BAL/2024/005",shifts:[[2,0],[2,2],[4,0],[4,2],[6,1],[6,2]],rs:"RS Tabanan",task:"Pendampingan ICU gawat darurat bedah.",c:"teal"},
+{id:18,name:"dr. Ayu Pratiwi, Sp.OG",specialty:"Obstetri",av:23,sip:"503/02/BAL/2024/006",shifts:[[0,0],[0,2],[3,0],[3,2],[6,0],[6,2]],rs:"RS Bunda Denpasar",task:"Kegawatdaruratan obstetri dan koordinasi NICU.",c:"pink"},
+{id:19,name:"dr. Bagus Wesnawa, Sp.B",specialty:"Bedah Umum",av:59,sip:"503/02/BAL/2024/007",shifts:[[1,1],[1,2],[3,1],[3,2],[5,1],[5,2]],rs:"RS Bali Royal",task:"Trauma abdomen dan luka robek.",c:"green"},
+{id:20,name:"dr. Ketut Yudistira, Sp.JP",specialty:"Jantung",av:62,sip:"503/02/BAL/2024/008",shifts:[[0,1],[0,2],[2,0],[2,2],[4,0],[4,1],[6,0],[6,2]],rs:"RS Jantung Denpasar",task:"Dokter jantung on-call ICU kardiak.",c:"red"}
+];
+var _fallbackHospitals=[
+{id:1,name:"RS Sanglah (RSUP Prof. Ngoerah)",tipe:"tipe-a",cat:"RS Umum Tipe A",addr:"Jl. Diponegoro, Denpasar",ph:"(0361) 227911",beds:800,docs:[3,13,16],fac:["IGD 24 Jam","ICU","NICU","MRI","CT Scan","Cath Lab"],peti:true},
+{id:2,name:"RS Bali Mandara",tipe:"tipe-a",cat:"RS Umum Tipe A",addr:"Jl. Bypass Ngurah Rai, Denpasar",ph:"(0361) 732333",beds:250,docs:[1,14],fac:["IGD 24 Jam","ICU","NICU","MRI","CT Scan"],peti:true},
+{id:3,name:"RS Bunda Denpasar",tipe:"spesialis",cat:"RS Spesialis Ibu & Anak",addr:"Jl. Teuku Umar, Denpasar",ph:"(0361) 244488",beds:150,docs:[2,18],fac:["IGD 24 Jam","NICU","PICU","Kamar Bersalin"],peti:true},
+{id:4,name:"RS Jantung Denpasar",tipe:"spesialis",cat:"RS Spesialis Jantung",addr:"Jl. Gatot Subroto Barat, Denpasar",ph:"(0361) 484088",beds:120,docs:[5,20],fac:["IGD 24 Jam","ICU Jantung","Cath Lab","ECG"],peti:true},
+{id:5,name:"RS Wangaya",tipe:"tipe-b",cat:"RS Umum Tipe B",addr:"Jl. Waribang, Denpasar",ph:"(0361) 223711",beds:350,docs:[7,15],fac:["IGD 24 Jam","ICU","Kamar Operasi","Laboratorium"],peti:true},
+{id:6,name:"RS Bali Royal",tipe:"tipe-b",cat:"RS Umum Tipe B",addr:"Jl. Mahendradatta, Denpasar",ph:"(0361) 9009999",beds:180,docs:[6,19],fac:["IGD 24 Jam","ICU","Kamar Operasi"],peti:true},
+{id:7,name:"RS Tabanan",tipe:"tipe-b",cat:"RS Umum Tipe B",addr:"Jl. Pahlawan, Tabanan",ph:"(0361) 811234",beds:200,docs:[8,17],fac:["IGD 24 Jam","ICU","Kamar Operasi"],peti:true},
+{id:8,name:"RS Harapan Bunda Bali",tipe:"tipe-c",cat:"RS Umum Tipe C",addr:"Jl. Raya Kuta, Badung",ph:"(0361) 755555",beds:80,docs:[4],fac:["IGD 24 Jam","Kamar Operasi"],peti:true},
+{id:9,name:"RS BIMC Bali",tipe:"tipe-b",cat:"RS Tipe B (Internasional)",addr:"Jl. Bypass Ngurah Rai, Kuta",ph:"(0361) 761263",beds:100,docs:[10],fac:["IGD 24 Jam","ICU","Telemedicine"],peti:true},
+{id:10,name:"RS Primaya Bali",tipe:"tipe-c",cat:"RS Umum Tipe C",addr:"Jl. Ahmad Yani, Denpasar",ph:"(0361) 445566",beds:90,docs:[9],fac:["IGD 24 Jam","Kamar Operasi"],peti:true},
+{id:11,name:"RS Kasih Ibu Denpasar",tipe:"tipe-c",cat:"RS Umum Tipe C",addr:"Jl. Teuku Umar Barat",ph:"(0361) 486688",beds:75,docs:[11],fac:["IGD 24 Jam","Kamar Operasi"],peti:true},
+{id:12,name:"RS Mata Bali",tipe:"spesialis",cat:"RS Spesialis Mata",addr:"Jl. Diponegoro, Denpasar",ph:"(0361) 227788",beds:60,docs:[12],fac:["IGD 24 Jam","Kamar Operasi","Laser"],peti:true}
+];
+var _fallbackAmbTypes=[
+{key:"jenazah-kota",name:"Ambulans Jenazah Dalam Kota",desc:"Pengangkutan jenazah dalam wilayah kota Tabanan dan sekitarnya. Dilengkapi peralatan steril dan tim yang profesional serta penuh penghormatan.",team:"1 Driver + 1 Petugas",time:"~20 menit",badge:"UTAMA",bc:"bg-red-600",sc:"bg-green-500",hc:"#DC2626",image:"https://images.unsplash.com/photo-1576091160550-2187d80a18f3?w=800&q=80"},
+{key:"darurat",name:"Ambulans Darurat Basic",desc:"Transportasi medis darurat dengan peralatan BLS standar. Termasuk oksigen, tangkar, dan spinal board untuk evakuasi.",team:"1 Paramedis",time:"~15 menit",badge:"",bc:"",sc:"bg-green-500",hc:"#0369A1",image:"https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=800&q=80"},
+{key:"advanced",name:"Ambulans Advanced",desc:"Peralatan ALS lengkap: defibrilator, suplai oksigen lengkap, obat-obatan darurat, dan intubasi untuk penanganan gawat.",team:"2 Paramedis",time:"~12 menit",badge:"Populer",bc:"bg-blue-600",sc:"bg-green-500",hc:"#1D4ED8",image:"https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80"},
+{key:"icu",name:"Ambulans ICU Mobile",desc:"ICU bergerak lengkap: ventilator portable, monitor EKG 12-lead, infus pump, dan didampingi dokter spesialis.",team:"1 Dokter + 2 Perawat",time:"~15 menit",badge:"",bc:"",sc:"bg-amber-500",hc:"#BE185D",image:"https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80"},
+{key:"neonatal",name:"Ambulans Neonatal",desc:"Inkubator portabel dengan suhu terkontrol, peralatan resusitasi bayi baru lahir, dan monitor vital sign neonatal.",team:"1 Dokter + 1 Perawat",time:"~15 menit",badge:"",bc:"",sc:"bg-green-500",hc:"#15803D",image:"https://images.unsplash.com/photo-1551190822-a9ce113ac100?w=800&q=80"}
+];
+var _fallbackExtras=[
+{key:"jenazah-pulau",name:"Jenazah Antar Pulau",desc:"Via kapal laut — dokumen lengkap, pengawasan ketat selama perjalanan antar pulau.",color:"blue",image:"https://images.unsplash.com/photo-1494412574643-ff11b0a5eb19?w=400&q=80"},
+{key:"cargo-udara",name:"Cargo Udara Jenazah",desc:"Via pesawat — koordinasi maskapai, bandara, dan dokumen pengiriman udara.",color:"purple",image:"https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=400&q=80"},
+{key:"evakuasi",name:"Evakuasi Medis",desc:"Kecelakaan kerja, bencana alam, evakuasi massal dengan tim terlatih.",color:"orange",image:"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80"},
+{key:"event",name:"Standby Event",desc:"Ambulans standby untuk acara, festival, olahraga, dan kegiatan besar.",color:"teal",image:"https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?w=400&q=80"}
+];
+var doctors=_adminData?_adminData.doctors:_fallbackDoctors,hospitals=_adminData?_adminData.hospitals:_fallbackHospitals,ambTypes=_adminData?_adminData.ambTypes:_fallbackAmbTypes,ambExtras=_adminData?_adminData.ambExtras:_fallbackExtras,currentRSFilter='all';
+
+function updateDataBadge(ju){var b=document.getElementById('data-badge');if(_fromAdmin){b.className='data-badge bg-green-100 text-green-700 border border-green-200'+(ju?' just-updated':'');b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span> Data Admin &bull; Live';}else{b.className='data-badge bg-amber-100 text-amber-700 border border-amber-200';b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Data Default';}}
+updateDataBadge(false);
+
+function syncLogo(){var logo=_adminData&&_adminData.logo?_adminData.logo:'bintanglogo.png';document.querySelectorAll('.company-logo,.footer-logo').forEach(function(img){if(img.tagName==='IMG'){img.src=logo;img.onerror=function(){this.outerHTML='<div class="w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center anim-siren"><svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="18" r="2"/></svg></div>';};}});}
+
+try{var channel=new BroadcastChannel(CHANNEL_NAME);channel.onmessage=function(e){if(e.data&&e.data.type==='data-updated'){if(window._lr&&Date.now()-window._lr<800)return;window._lr=Date.now();dataVersion=Date.now();var f=loadAdminData();if(f){doctors=f.doctors;hospitals=f.hospitals;ambTypes=f.ambTypes;ambExtras=f.ambExtras;}syncLogo();renderAmbCards();renderRS(currentRSFilter);renderShiftTabs();renderDocs();updateDataBadge(true);var h=document.getElementById('hero-unit-count');if(h)h.textContent=ambTypes.length+' Unit';var d=document.getElementById('hero-doc-count');if(d)d.textContent=doctors.length+' Dokter';refreshFormOptions();showToast('Data diperbarui dari Admin Panel','success');}};}catch(e){}
+
+function forceRefresh(){location.reload();}
+function refreshFormOptions(){var ft=document.getElementById('form-type');if(!ft)return;var v=ft.value;ft.innerHTML='<option value="">Pilih jenis layanan</option>';ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ft.value=v;var sel=document.getElementById('form-rs');if(!sel)return;var rv=sel.value;sel.innerHTML='<option value="">Pilih RS (opsional)</option>';hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});sel.value=rv;}
+
+function ambSVG(c,w,h){return '<svg class="amb-svg" width="'+w+'" height="'+h+'" viewBox="0 0 300 200" fill="none"><rect x="20" y="60" width="200" height="90" rx="8" fill="'+c+'"/><rect x="220" y="80" width="50" height="70" rx="6" fill="'+c+'" opacity=".8"/><rect x="30" y="40" width="90" height="50" rx="6" fill="#F8FAFC"/><rect x="40" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="80" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="110" y="85" width="55" height="14" rx="3" fill="white"/><rect x="130" y="72" width="14" height="40" rx="3" fill="white"/><rect x="20" y="130" width="200" height="5" fill="#FBBF24" opacity=".7"/><rect x="220" y="130" width="50" height="5" fill="#FBBF24" opacity=".7"/><circle cx="75" cy="155" r="20" fill="#1E293B"/><circle cx="75" cy="155" r="13" fill="#475569"/><circle cx="75" cy="155" r="4" fill="#94A3B8"/><circle cx="220" cy="155" r="20" fill="#1E293B"/><circle cx="220" cy="155" r="13" fill="#475569"/><circle cx="220" cy="155" r="4" fill="#94A3B8"/><text x="120" y="125" font-family="Inter" font-size="8" font-weight="700" fill="white" text-anchor="middle">BINTANG ABADI</text></svg>';}
+
+function extIcon(color){var i={blue:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 21l1-4 9.5-9.5"/><path d="M17 8l-4-4 4-4 4 4-4 4z"/></svg>',purple:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',orange:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',teal:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'};return i[color]||i.blue;}
+
+function renderAmbCards(){
+    document.getElementById('amb-cards').innerHTML=ambTypes.map(function(a){
+        var hasImage=a.image&&a.image.length>10;
+        var imgArea=hasImage?'<img src="'+a.image+'" alt="'+a.name+'" class="amb-card-img" loading="lazy">':'<div class="flex items-center justify-center p-8">'+ambSVG(a.hc,260,170)+'</div>';
+        return '<div class="sr amb-card-wrap group relative bg-white rounded-2xl border-2 border-slate-100 hover:border-red-500 overflow-hidden transition-all duration-300 hover:shadow-2xl cursor-pointer" onclick="openOrderModal(\''+a.key+'\')">'
+            +'<div class="amb-card-visual aspect-[16/10] rounded-t-2xl bg-gradient-to-br from-slate-50 to-slate-100 relative">'
+            +imgArea
+            +'<div class="badge-layer flex items-start justify-between p-4">'
+            +(a.badge?'<span class="'+(a.bc||'bg-red-600')+' text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg relative z-10">'+a.badge+'</span>':'<span></span>')
+            +'<span class="'+(a.sc||'bg-green-500')+' text-white text-xs font-semibold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg relative z-10"><span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>Tersedia</span>'
+            +'</div></div>'
+            +'<div class="p-6"><h3 class="font-bold text-sky-950 text-xl leading-tight">'+a.name+'</h3>'
+            +'<p class="text-slate-500 text-sm leading-relaxed mt-3">'+a.desc+'</p>'
+            +'<div class="mt-4 flex items-center gap-4 text-xs text-slate-400">'
+            +'<span class="flex items-center gap-1.5"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+a.team+'</span>'
+            +'<span class="flex items-center gap-1.5"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'+(a.time||'')+'</span></div>'
+            +'<button class="w-full mt-5 bg-slate-100 hover:bg-red-600 text-slate-700 hover:text-white py-3 rounded-xl text-sm font-semibold transition-all">Pilih & Pesan</button></div></div>';
+    }).join('');
+    var cm={blue:'blue',purple:'purple',orange:'orange',teal:'teal'};
+    document.getElementById('amb-extra').innerHTML=ambExtras.map(function(a){
+        var hasImage=a.image&&a.image.length>10;var c=cm[a.color]||'blue';
+        var imgArea=hasImage?'<img src="'+a.image+'" alt="'+a.name+'" class="amb-card-img" loading="lazy">':'<div class="flex items-center justify-center p-6 text-'+c+'-600">'+extIcon(a.color)+'</div>';
+        return '<div class="sr bg-white rounded-2xl overflow-hidden border border-slate-100 hover:border-'+c+'-300 hover:shadow-xl transition-all cursor-pointer group" onclick="openOrderModal(\''+a.key+'\')">'
+            +'<div class="amb-card-visual aspect-[16/10] bg-gradient-to-br from-'+c+'-50 to-'+c+'-100 rounded-t-2xl relative">'
+            +imgArea+'</div>'
+            +'<div class="p-4"><h3 class="font-semibold text-sky-950 text-sm">'+a.name+'</h3>'
+            +'<p class="text-sm text-slate-500 mt-1 leading-relaxed">'+a.desc+'</p></div></div>';
+    }).join('');
+    document.querySelectorAll('#amb-cards .sr,#amb-extra .sr').forEach(function(el){observer.observe(el);});
+}
+
+/* ===== DOKTER ===== */
+var selectedDay,selectedShift;
+function getCurrentShift(){var h=new Date().getHours();if(h>=7&&h<14)return 0;if(h>=14&&h<21)return 1;return 2;}
+function isOnDuty(d,di,si){if(d.shifts==='24h')return true;return d.shifts.some(function(s){return s[0]===di&&s[1]===si;});}
+function getShiftLabel(d,di){if(d.shifts==='24h')return '24 Jam';return d.shifts.filter(function(s){return s[0]===di;}).map(function(s){return SHIFTS[s[1]].label;}).join(', ');}
+function getShiftTime(d,di){if(d.shifts==='24h')return '00:00 — 24:00';return d.shifts.filter(function(s){return s[0]===di;}).map(function(s){return SHIFTS[s[1]].from+':00 — '+SHIFTS[s[1]].to+':00';}).join(' | ');}
+function switchDay(d){selectedDay=d;selectedShift=getCurrentShift();document.querySelectorAll('#day-tabs button').forEach(function(b,i){b.classList.toggle('tab-active',i===d);b.classList.toggle('bg-white/10',i!==d);b.classList.toggle('text-white/70',i!==d);});renderShiftTabs();renderDocs();}
+function switchShift(s){selectedShift=s;document.querySelectorAll('#shift-tabs button').forEach(function(b,i){b.classList.toggle('shift-active',i===s);});renderDocs();}
+function renderShiftTabs(){document.getElementById('shift-tabs').innerHTML=SHIFTS.map(function(s,i){return '<button onclick="switchShift('+i+')" class="shift-tag border '+s.color+' '+(i===selectedShift?'shift-active':'hover:opacity-80')+'" style="'+(i===selectedShift?'':'border-color:transparent;')+'">'+s.label+' ('+s.from+':00–'+s.to+':00)</button>';}).join('')+'<button onclick="switchShift(-1)" class="shift-tag border '+(selectedShift===-1?'shift-active':'bg-white/10 text-white/70 hover:bg-white/20 border-transparent hover:opacity-80')+'" style="'+(selectedShift===-1?'':'border-color:transparent;')+'">Semua</button>';}
+function renderDocs(){
+    var g=document.getElementById('doc-grid'),f;
+    if(selectedShift===-1){f=doctors.filter(function(d){return d.shifts==='24h'||d.shifts.some(function(s){return s[0]===selectedDay;});});}
+    else{f=doctors.filter(function(d){return isOnDuty(d,selectedDay,selectedShift);});}
+    if(!f.length){g.innerHTML='<div class="col-span-full text-center py-16"><p class="text-white/40 text-lg">Tidak ada dokter bertugas</p></div>';return;}
+    g.innerHTML=f.map(function(d){
+        var is24=d.shifts==='24h',sl=getShiftLabel(d,selectedDay),st=getShiftTime(d,selectedDay),sc=is24?'bg-green-100 text-green-700':SHIFTS[selectedShift>=0?selectedShift:0].color,pu=docPhoto(d,120);
+        return '<div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 cursor-pointer" onclick="showDoc('+d.id+')">'
+            +'<div class="flex items-center gap-4 mb-4"><div class="relative flex-shrink-0"><img src="'+pu+'" class="w-14 h-14 rounded-xl object-cover" alt="'+d.name+'" onerror="this.src=\'https://i.pravatar.cc/120?img='+(d.av||1)+'\'"><span class="online-badge"></span></div>'
+            +'<div class="min-w-0"><h4 class="text-white font-semibold text-sm truncate">'+d.name+'</h4><p class="text-'+d.c+'-400 text-xs font-medium mt-0.5">'+d.specialty+'</p></div></div>'
+            +'<div class="space-y-2"><div class="flex items-center gap-2 text-xs text-slate-400"><svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="truncate">'+d.rs+'</span></div>'
+            +'<div class="flex items-center gap-2"><span class="shift-tag '+sc+'">'+sl+'</span></div>'
+            +'<div class="text-xs text-slate-500">'+st+'</div></div>'
+            +'<div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between"><span class="flex items-center gap-1.5 text-xs text-green-400"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>'+(is24?'Siaga 24 Jam':'Sedang Bertugas')+'</span><span class="text-xs text-white/40">Detail →</span></div></div>';
+    }).join('');
+}
+function showDoc(id){
+    var d=doctors.find(function(x){return x.id===id;});if(!d)return;
+    var is24=d.shifts==='24h',dayList=is24?'Setiap Hari: 00:00 — 24:00':Array.from(new Set(d.shifts.map(function(s){return DN[s[0]];}))).map(function(k){return k+': '+d.shifts.filter(function(s){return DN[s[0]]===k;}).map(function(s){return SHIFTS[s[1]].label+' '+SHIFTS[s[1]].from+':00–'+SHIFTS[s[1]].to+':00';}).join(', ');}).join('<br>'),pu=docPhoto(d,200);
+    document.getElementById('detail-content').innerHTML='<div class="flex items-center justify-between mb-6"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Profil Dokter</span><button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center"><svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+        +'<div class="flex items-center gap-4 mb-6"><div class="relative"><img src="'+pu+'" class="w-20 h-20 rounded-2xl object-cover doc-photo-new" alt="'+d.name+'" onerror="this.src=\'https://i.pravatar.cc/200?img='+(d.av||1)+'\'"><span class="online-badge" style="width:18px;height:18px;border-width:3px;bottom:4px;right:4px;"></span></div>'
+        +'<div><h3 class="text-lg font-semibold text-sky-950">'+d.name+'</h3><p class="text-'+d.c+'-600 font-medium text-sm">'+d.specialty+'</p><p class="text-xs text-slate-400 mt-1">SIP: '+(d.sip||'-')+'</p></div></div>'
+        +'<div class="space-y-4"><div class="bg-slate-50 rounded-xl p-4"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tugas</div><p class="text-slate-700 text-sm leading-relaxed">'+d.task+'</p></div>'
+        +'<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Jadwal Lengkap</div><p class="text-sm text-sky-950 leading-relaxed">'+dayList+'</p></div>'
+        +'<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs text-slate-500 mb-1">RS Penempatan</div><p class="text-sm font-medium text-sky-950">'+d.rs+'</p></div>'
+        +'<div class="flex items-center gap-2 p-3 '+(is24?'bg-green-50 border-green-200':'bg-blue-50 border-blue-200')+' border rounded-xl"><span class="w-2 h-2 '+(is24?'bg-green-500':'bg-blue-500')+' rounded-full animate-pulse"></span><span class="text-sm '+(is24?'text-green-700':'text-blue-700')+' font-medium">Status: '+(is24?'Siaga 24 Jam':'Online')+'</span></div></div>';
+    document.getElementById('detail-modal').classList.remove('hidden');document.body.style.overflow='hidden';
+}
+
+/* ===== RS MITRA — mendukung gambar dari admin ===== */
+function renderRS(filter){
+    currentRSFilter=filter;
+    var g=document.getElementById('rs-grid');
+    var f=filter==='all'?hospitals:hospitals.filter(function(h){return h.tipe===filter;});
+    var bc={'tipe-a':'bg-blue-100 text-blue-700','tipe-b':'bg-green-100 text-green-700','tipe-c':'bg-amber-100 text-amber-700','spesialis':'bg-purple-100 text-purple-700'};
+    var fallbackSvg=ambSVG('#64748B',300,160);
+
+    g.innerHTML=f.map(function(h){
+        var imgSrc=rsImage(h); // null jika tidak ada gambar dari admin
+        var hasRealImg=!!imgSrc;
+
+        // Bangun area visual: gambar admin jika ada, fallback SVG jika tidak
+        var visualInner;
+        if(hasRealImg){
+            visualInner='<img src="'+imgSrc+'" alt="'+h.name+'" class="rs-real-img rs-new-img" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+                +'<div class="rs-fallback bg-gradient-to-br from-slate-100 to-slate-200" style="display:none">'+fallbackSvg+'</div>';
+        } else {
+            visualInner='<div class="rs-fallback bg-gradient-to-br from-slate-100 to-slate-200">'+fallbackSvg+'</div>';
+        }
+
+        var dl=(h.docs||[]).map(function(i){return doctors.find(function(d){return d.id===i;});}).filter(Boolean);
+        return '<div class="sr rs-card-wrap bg-white rounded-2xl border border-slate-100 hover:border-red-200 hover:shadow-xl transition-all duration-300 overflow-hidden">'
+            +'<div class="rs-card-visual h-48 relative rounded-t-2xl overflow-hidden">'
+            +visualInner
+            +'<div class="rs-badge-layer flex items-start justify-between">'
+            +'<span class="px-3 py-1 rounded-full text-xs font-semibold '+(bc[h.tipe]||'bg-slate-100 text-slate-700')+' relative z-10">'+h.cat+'</span>'
+            +(h.peti?'<span class="bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 relative z-10"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="6" y1="6" x2="18" y2="6"/><line x1="6" y1="18" x2="18" y2="18"/></svg>Peti Mati</span>':'<span></span>')
+            +'</div></div>'
+            +'<div class="p-6"><h3 class="font-semibold text-sky-950 text-lg leading-tight">'+h.name+'</h3>'
+            +'<div class="flex items-center gap-2 text-xs text-slate-400 mt-2"><svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="truncate">'+h.addr+'</span></div>'
+            +'<div class="flex items-center gap-4 mt-3 text-xs text-slate-500"><span>'+h.beds+' Bed</span><span>'+h.ph+'</span></div>'
+            +'<div class="flex flex-wrap gap-1.5 mt-4">'+(h.fac||[]).map(function(fa){return '<span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">'+fa+'</span>';}).join('')+(h.peti?'<span class="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs rounded-lg font-medium">Peti Mati</span>':'')+'</div>'
+            +'<div class="mt-5 pt-5 border-t border-slate-100"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Dokter Bintang Abadi</div><div class="space-y-2.5">'
+            +dl.map(function(dd){return '<div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 -mx-2 px-2 py-1.5 rounded-lg transition-colors" onclick="showDoc('+dd.id+')"><div class="relative flex-shrink-0"><img src="'+docPhoto(dd,80)+'" class="w-9 h-9 rounded-lg object-cover" alt=""><span class="online-badge" style="width:10px;height:10px;border-width:2px;bottom:0;right:0;"></span></div><div class="min-w-0"><div class="text-sm font-medium text-sky-950 truncate">'+dd.name+'</div><div class="text-xs text-slate-400">'+dd.specialty+(dd.shifts==='24h'?' — 24 Jam':'')+'</div></div><svg class="w-4 h-4 text-slate-300 ml-auto flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>';}).join('')
+            +(dl.length===0?'<p class="text-xs text-slate-400">Belum ada dokter ditugaskan</p>':'')
+            +'</div></div></div></div>';
+    }).join('');
+    g.querySelectorAll('.sr').forEach(function(el){observer.observe(el);});
+}
+
+function filterRS(f){document.querySelectorAll('.rsf').forEach(function(b){b.classList.toggle('bg-sky-950',b.dataset.f===f);b.classList.toggle('text-white',b.dataset.f===f);b.classList.toggle('bg-slate-100',b.dataset.f!==f);b.classList.toggle('text-slate-600',b.dataset.f!==f);});renderRS(f);}
+
+/* ===== MODALS & UTILS ===== */
+function openOrderModal(t){document.getElementById('order-modal').classList.remove('hidden');document.body.style.overflow='hidden';if(t)document.getElementById('form-type').value=t;}
+function closeOrderModal(){document.getElementById('order-modal').classList.add('hidden');document.body.style.overflow='';}
+function closeDetailModal(){document.getElementById('detail-modal').classList.add('hidden');document.body.style.overflow='';}
+function submitOrder(e){e.preventDefault();var b=document.getElementById('submit-btn');b.textContent='Memproses...';b.disabled=true;setTimeout(function(){closeOrderModal();document.getElementById('order-form').reset();b.textContent='Konfirmasi Pesanan';b.disabled=false;showToast('Pesanan berhasil dikirim! Tim kami menghubungi Anda dalam 2 menit.','success');},2000);}
+function showToast(msg,type){var c=document.getElementById('toast-container'),t=document.createElement('div');var bg=type==='success'?'bg-green-600':'bg-red-600';var icon=type==='success'?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';t.className='toast '+bg+' text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm';t.innerHTML='<svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">'+icon+'</svg><p class="text-sm font-medium">'+msg+'</p>';c.appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(40px)';t.style.transition='all .3s';setTimeout(function(){t.remove();},300);},5000);}
+function toggleMobileMenu(){document.getElementById('mobile-menu').classList.toggle('hidden');}
+function closeMobileMenu(){document.getElementById('mobile-menu').classList.add('hidden');}
+function updateClock(){var n=new Date(),hh=String(n.getHours()).padStart(2,'0'),mm=String(n.getMinutes()).padStart(2,'0'),ss=String(n.getSeconds()).padStart(2,'0');document.getElementById('clock-display').innerHTML='<div class="inline-flex items-center gap-3 glass rounded-full px-6 py-3"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span><span class="text-white font-mono text-lg font-semibold">'+hh+':'+mm+':'+ss+'</span><span class="text-slate-400 text-sm">WITA — '+DN[n.getDay()===0?6:n.getDay()-1]+'</span></div>';}
+
+var observer=new IntersectionObserver(function(entries){entries.forEach(function(x){if(x.isIntersecting)x.target.classList.add('revealed');});},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+window.addEventListener('scroll',function(){var n=document.getElementById('navbar');n.classList.toggle('bg-sky-950/95',window.scrollY>50);n.classList.toggle('backdrop-blur-md',window.scrollY>50);n.classList.toggle('shadow-lg',window.scrollY>50);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrderModal();closeDetailModal();}});
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('.sr').forEach(function(el){observer.observe(el);});
+    var td=new Date().getDay(),today=td===0?6:td-1;
+    selectedDay=today;selectedShift=getCurrentShift();
+    document.getElementById('day-tabs').innerHTML=DN.map(function(n,i){return '<button onclick="switchDay('+i+')" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all '+(i===today?'tab-active':'bg-white/10 text-white/70 hover:bg-white/20')+'" data-day="'+i+'">'+n+'</button>';}).join('');
+    renderShiftTabs();renderDocs();
+    document.getElementById('rs-filters').innerHTML='<button onclick="filterRS(\'all\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-sky-950 text-white" data-f="all">Semua</button><button onclick="filterRS(\'tipe-a\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-a">Tipe A</button><button onclick="filterRS(\'tipe-b\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-b">Tipe B</button><button onclick="filterRS(\'tipe-c\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-c">Tipe C</button><button onclick="filterRS(\'spesialis\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="spesialis">Spesialis</button>';
+    renderRS('all');renderAmbCards();updateClock();setInterval(updateClock,1000);
+    var ft=document.getElementById('form-type');ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
+    var sel=document.getElementById('form-rs');hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});
+    syncLogo();
+    var hc=document.getElementById('hero-unit-count');if(hc)hc.textContent=ambTypes.length+' Unit';
+    var dc=document.getElementById('hero-doc-count');if(dc)dc.textContent=doctors.length+' Dokter';
+});
+</script>
+</body>
+</html>
