@@ -212,7 +212,7 @@
         <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Pelayanan Kami</span><h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4 drop-shadow-sm">Layanan Sesuai Visi & Misi</h2></div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
             <div class="sr rounded-2xl p-6 sm:p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff] hover:shadow-[inset_12px_12px_24px_#d1d5db,inset_-12px_-12px_24px_#ffffff]">
-                <img src="https://media.indozone.id/crop/0x0:0x0/images/2026/03/17/1773746524_69b9395c05c71_download_emergency_services_at_hospital_entrance_with_ambulance_at_dusk_for_free.jpeg" alt="Ambulans Darurat" class="w-full max-w-[600px] h-[210px] sm:h-[210px] object-contain drop-shadow-xl mb-6">
+                <img src="https://media.indozone.id/crop/0x0:0x0/images/2026/03/17/1773746523_69b9395c05c71_download_emergency_services_at_hospital_entrance_with_ambulance_at_dusk_for_free.jpeg" alt="Ambulans Darurat" class="w-full max-w-[600px] h-[210px] sm:h-[210px] object-contain drop-shadow-xl mb-6">
                 <h3 class="text-lg sm:text-xl font-semibold text-sky-950 drop-shadow-sm">Ambulans Darurat</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Respons kurang dari 15 menit. Peralatan BLS/ALS dan tim paramedis tersertifikasi.</p>
                 <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">BLS</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">ALS</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">24 Jam</span></div>
@@ -264,7 +264,8 @@
     <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-400">Jadwal Real-Time</span><h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold text-white tracking-tight mt-4">Dokter Siaga Sekarang</h2><p class="text-slate-400 leading-relaxed mt-4 max-w-2xl mx-auto text-sm sm:text-base">Jadwal berganti per shift (pagi/siang/malam). Titik hijau = sedang bertugas.</p></div>
     <div class="flex flex-wrap justify-center gap-2 mt-4 sr" id="day-tabs"></div>
     <div class="flex flex-wrap justify-center gap-2 mt-3 sr" id="shift-tabs"></div>
-    <div id="doc-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mt-10"></div>
+    <!-- Grid diubah menjadi 2 kolom agar kartu horizontal lebih lebar dan enak dibaca -->
+    <div id="doc-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-10"></div>
     <div class="text-center mt-6 sr" id="clock-display"></div>
 </div></section>
 
@@ -297,7 +298,7 @@
         <div><div class="flex items-center gap-3 mb-6"><img src="bintanglogo.png" alt="Logo" class="footer-logo w-11 h-11 rounded-xl object-cover" onerror="this.outerHTML='<div class=\'w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center\'><svg class=\'w-6 h-6 text-white\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\'><path d=\'M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4\'/><circle cx=\'18\' cy=\'16\' r=\'2\'/><circle cx=\'6\' cy=\'18\' r=\'2\'/></svg></div>'"><div class="leading-tight"><span class="text-lg font-bold text-white block">Bintang Abadi</span><span class="text-[10px] text-red-400 font-medium uppercase tracking-wider">Ambulance Service</span></div></div><p class="text-slate-400 text-sm leading-relaxed">PT. Bintang Abadi — Layanan ambulance & pengangkutan jenazah 24 jam di Bali.</p></div>
         <div><h4 class="text-white font-semibold mb-6">Layanan</h4><ul class="space-y-3"><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Ambulans Jenazah 24 Jam</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Pengangkutan Dalam Kota</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Pengiriman Antar Pulau</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Cargo Udara</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">ICU Mobile</a></li><li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Penyediaan Peti Mati</a></li></ul></div>
         <div><h4 class="text-white font-semibold mb-6">Informasi</h4><ul class="space-y-3"><li><a href="#visi" class="text-slate-400 text-sm hover:text-white transition-colors">Tentang Kami</a></li><li><a href="#rumahsakit" class="text-slate-400 text-sm hover:text-white transition-colors">RS Mitra</a></li><li><a href="#dokter" class="text-slate-400 text-sm hover:text-white transition-colors">Jadwal Dokter</a></li></ul></div>
-        <div><h4 class="text-white font-semibold mb-6">Kontak</h4><div class="space-y-4"><a href="tel:085176920291" class="flex items-center gap-3 text-red-400 font-semibold hover:text-red-300 transition-colors"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>0851-7692-0291</a><a href="mailto:24jambintangabadi@gmail.com" class="flex items-center gap-3 text-slate-400 text-sm hover:text-white transition-colors"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>24jambintangabadi@gmail.com</a><div class="flex items-start gap-3 text-slate-400 text-sm"><svg class="w-4 h-4 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Jl. Pulau Batam, Tabanan, Bali</div></div></div>
+        <div><h4 class="text-white font-semibold mb-6">Kontak</h4><div class="space-y-4"><a href="tel:085176920291" class="flex items-center gap-3 text-red-400 font-semibold hover:text-red-300 transition-colors"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>0851-7692-0291</a><a href="mailto:24jambintangabadi@gmail.com" class="flex items-center gap-3 text-slate-400 text-sm hover:text-white transition-colors"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0 1.1.9 2 2 2z"/><polyline points="22,6 12,13 2,6"/></svg>24jambintangabadi@gmail.com</a><div class="flex items-start gap-3 text-slate-400 text-sm"><svg class="w-4 h-4 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Jl. Pulau Batam, Tabanan, Bali</div></div></div>
     </div>
     <div class="flex flex-col md:flex-row justify-between items-center pt-8 gap-4"><p class="text-slate-500 text-sm">&copy; 2024 PT. Bintang Abadi Ambulance Service</p><p class="text-slate-600 text-xs">Ambulance Jenazah 24 Jam — Dalam Kota, Antar Pulau & Cargo Udara</p></div>
 </div></footer>
@@ -410,19 +411,16 @@ var ambTypes=_adminData?_adminData.ambTypes:_fallbackAmbTypes;
 var ambExtras=_adminData?_adminData.ambExtras:_fallbackExtras;
 var currentRSFilter='all';
 
-/* ===== UPDATE BADGE STATUS (hidden, hanya admin yang bisa lihat via DevTools) ===== */
+/* ===== UPDATE BADGE STATUS ===== */
 function updateDataBadge(ju){
     var b=document.getElementById('data-badge');
     if(!b)return;
     if(useFirebase&&_fromAdmin){
         b.className='data-badge hidden'+(ju?' just-updated':'');
-        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span> Data Admin &bull; Firebase Live';
     }else if(_fromAdmin){
         b.className='data-badge hidden'+(ju?' just-updated':'');
-        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;display:inline-block"></span> Data Admin &bull; Cache';
     }else{
         b.className='data-badge hidden';
-        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Data Default';
     }
 }
 updateDataBadge(false);
@@ -504,7 +502,7 @@ function refreshFormOptions(){
 }
 
 /* ===== AMB SVG ===== */
-function ambSVG(c,w,h){return '<svg class="amb-svg" width="'+w+'" height="'+h+'" viewBox="0 0 300 200" fill="none"><rect x="20" y="60" width="200" height="90" rx="8" fill="'+c+'"/><rect x="220" y="80" width="50" height="70" rx="6" fill="'+c+'" opacity=".8"/><rect x="30" y="40" width="90" height="50" rx="6" fill="#F8FAFC"/><rect x="40" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="80" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="110" y="85" width="55" height="14" rx="3" fill="white"/><rect x="130" y="72" width="14" height="40" rx="3" fill="white"/><rect x="20" y="130" width="200" height="5" fill="#FBBF24" opacity=".7"/><rect x="220" y="130" width="50" height="5" fill="#FBBF24" opacity=".7"/><circle cx="75" cy="155" r="20" fill="#1E293B"/><circle cx="75" cy="155" r="13" fill="#475569"/><circle cx="75" cy="155" r="4" fill="#94A3B8"/><circle cx="220" cy="155" r="20" fill="#1E293B"/><circle cx="220" cy="155" r="13" fill="#475569"/><circle cx="220" cy="155" r="4" fill="#94A3B8"/><text x="120" y="125" font-family="Inter" font-size="8" font-weight="700" fill="white" text-anchor="middle">BINTANG ABADI</text></svg>';}
+function ambSVG(c,w,h){return '<svg class="amb-svg" width="'+w+'" height="'+h+'" viewBox="0 0 300 200" fill="none"><rect x="20" y="60" width="200" height="90" rx="8" fill="'+c+'"/><rect x="220" y="80" width="50" height="70" rx="6" fill="'+c+'" opacity=".8"/><rect x="30" y="40" width="90" height="50" rx="6" fill="#F8FAFC"/><rect x="40" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="80" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="110" y="85" width="55" height="14" rx="3" fill="White"/><rect x="130" y="72" width="14" height="40" rx="3" fill="white"/><rect x="20" y="130" width="200" height="5" fill="#FBBF24" opacity=".7"/><rect x="220" y="130" width="50" height="5" fill="#FBBF24" opacity=".7"/><circle cx="75" cy="155" r="20" fill="#1E293B"/><circle cx="75" cy="155" r="13" fill="#475569"/><circle cx="75" cy="155" r="4" fill="#94A3B8"/><circle cx="220" cy="155" r="20" fill="#1E293B"/><circle cx="220" cy="155" r="13" fill="#475569"/><circle cx="220" cy="155" r="4" fill="#94A3B8"/><text x="120" y="125" font-family="Inter" font-size="8" font-weight="700" fill="white" text-anchor="middle">BINTANG ABADI</text></svg>';}
 
 function extIcon(color){var i={blue:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 21l1-4 9.5-9.5"/><path d="M17 8l-4-4 4-4 4 4-4 4z"/></svg>',purple:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',orange:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',teal:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'};return i[color]||i.blue;}
 
@@ -544,29 +542,75 @@ function renderAmbCards(){
 var selectedDay,selectedShift;
 function getCurrentShift(){var h=new Date().getHours();if(h>=7&&h<14)return 0;if(h>=14&&h<21)return 1;return 2;}
 function isOnDuty(d,di,si){if(d.shifts==='24h')return true;return d.shifts.some(function(s){return s[0]===di&&s[1]===si;});}
-function getShiftLabel(d,di){if(d.shifts==='24h')return '24 Jam';return d.shifts.filter(function(s){return s[0]===di;}).map(function(s){return SHIFTS[s[1]].label;}).join(', ');}
-function getShiftTime(d,di){if(d.shifts==='24h')return '00:00 — 24:00';return d.shifts.filter(function(s){return s[0]===di;}).map(function(s){return SHIFTS[s[1]].from+':00 — '+SHIFTS[s[1]].to+':00';}).join(' | ');}
 function switchDay(d){selectedDay=d;selectedShift=getCurrentShift();document.querySelectorAll('#day-tabs button').forEach(function(b,i){b.classList.toggle('tab-active',i===d);b.classList.toggle('bg-white/10',i!==d);b.classList.toggle('text-white/70',i!==d);});renderShiftTabs();renderDocs();}
 function switchShift(s){selectedShift=s;document.querySelectorAll('#shift-tabs button').forEach(function(b,i){b.classList.toggle('shift-active',i===s);});renderDocs();}
 function renderShiftTabs(){
     document.getElementById('shift-tabs').innerHTML=SHIFTS.map(function(s,i){return '<button onclick="switchShift('+i+')" class="shift-tag border '+s.color+' '+(i===selectedShift?'shift-active':'hover:opacity-80')+'" style="'+(i===selectedShift?'':'border-color:transparent;')+'">'+s.label+' ('+s.from+':00–'+s.to+':00)</button>';}).join('')+'<button onclick="switchShift(-1)" class="shift-tag border '+(selectedShift===-1?'shift-active':'bg-white/10 text-white/70 hover:bg-white/20 border-transparent hover:opacity-80')+'" style="'+(selectedShift===-1?'':'border-color:transparent;')+'">Semua</button>';
 }
+
+/* ===== RENDER DOCS (MODIFIED) ===== */
 function renderDocs(){
     var g=document.getElementById('doc-grid'),f;
+    // Filter logic
     if(selectedShift===-1){f=doctors.filter(function(d){return d.shifts==='24h'||d.shifts.some(function(s){return s[0]===selectedDay;});});}
     else{f=doctors.filter(function(d){return isOnDuty(d,selectedDay,selectedShift);});}
+    
     if(!f.length){g.innerHTML='<div class="col-span-full text-center py-16"><p class="text-white/40 text-lg">Tidak ada dokter bertugas</p></div>';return;}
+    
     g.innerHTML=f.map(function(d){
-        var is24=d.shifts==='24h',sl=getShiftLabel(d,selectedDay),st=getShiftTime(d,selectedDay),sc=is24?'bg-green-100 text-green-700':SHIFTS[selectedShift>=0?selectedShift:0].color,pu=docPhoto(d,120);
-        return '<div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-5 hover:bg-white/10 transition-all duration-300 cursor-pointer" onclick="showDoc('+d.id+')">'
-            +'<div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4"><div class="relative flex-shrink-0"><img src="'+pu+'" class="w-28 h-28 sm:w-24 sm:h-24 rounded-xl object-cover" alt="'+d.name+'" onerror="this.src=\'https://i.pravatar.cc/120?img='+(d.av||1)+'\'"><span class="online-badge"></span></div>'
-            +'<div class="min-w-0"><h4 class="text-white font-semibold text-xs sm:text-sm truncate">'+d.name+'</h4><p class="text-'+d.c+'-400 text-[10px] sm:text-xs font-medium mt-0.5">'+d.specialty+'</p></div></div>'
-            +'<div class="space-y-2"><div class="flex items-center gap-2 text-[10px] sm:text-xs text-slate-400"><svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="truncate">'+d.rs+'</span></div>'
-            +'<div class="flex items-center gap-2"><span class="shift-tag '+sc+'">'+sl+'</span></div>'
-            +'<div class="text-[10px] sm:text-xs text-slate-500">'+st+'</div></div>'
-            +'<div class="mt-3 sm:mt-4 pt-3 border-t border-white/10 flex items-center justify-between"><span class="flex items-center gap-1.5 text-[10px] sm:text-xs text-green-400"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>'+(is24?'Siaga 24 Jam':'Sedang Bertugas')+'</span><span class="text-[10px] sm:text-xs text-white/40">Detail →</span></div></div>';
+        var is24=d.shifts==='24h';
+        var onDuty = isOnDuty(d, selectedDay, selectedShift >= 0 ? selectedShift : getCurrentShift());
+        
+        // Prepare shift display list
+        var shiftItems = '';
+        if(is24){
+            shiftItems = '<div class="flex items-center gap-2 text-white/80"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>24 Jam (00:00 - 24:00)</span></div>';
+        } else {
+            // Filter shifts for the selected day
+            var dayShifts = d.shifts.filter(function(s){ return s[0] === selectedDay; });
+            shiftItems = dayShifts.map(function(s){
+                var shiftObj = SHIFTS[s[1]];
+                return '<div class="flex items-center gap-2 text-white/80"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>'+shiftObj.label+' ('+shiftObj.from+':00 - '+shiftObj.to+':00)</span></div>';
+            }).join('');
+        }
+        
+        var pu=docPhoto(d,200); // Use larger photo for card
+
+        return '<div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex" onclick="showDoc('+d.id+')">'
+            // Left Side: Photo
+            +'<div class="w-28 sm:w-36 md:w-44 flex-shrink-0 bg-slate-100 flex items-center justify-center relative overflow-hidden">'
+                +'<img src="'+pu+'" class="w-full h-full object-cover doc-photo-new" alt="'+d.name+'">'
+                // Optional: small badge on photo corner if needed, but image covers the area
+            +'</div>'
+            // Right Side: Info
+            +'<div class="flex-1 bg-sky-900 p-4 sm:p-5 flex flex-col justify-between relative">'
+                // Content Top
+                +'<div>'
+                    +'<h4 class="text-white font-bold text-sm sm:text-base leading-tight">'+d.name+'</h4>'
+                    +'<p class="text-sky-300 text-xs sm:text-sm mt-1 font-medium">'+d.specialty+'</p>'
+                    +'<div class="mt-3 sm:mt-4 space-y-1.5 text-[11px] sm:text-xs">'
+                        + shiftItems
+                    +'</div>'
+                +'</div>'
+                // Content Bottom
+                +'<div class="mt-3 sm:mt-4">'
+                    +'<div class="flex items-center gap-2 text-white/70 text-[11px] sm:text-xs">'
+                        +'<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+                        +'<span>'+d.rs+'</span>'
+                    +'</div>'
+                    +'<div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">'
+                        +'<span class="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium '+(onDuty?'text-green-400':'text-slate-400')+'">'
+                            +'<span class="w-2 h-2 rounded-full '+(onDuty?'bg-green-400 animate-pulse':'bg-slate-400')+'"></span>'
+                            +(onDuty?'Sedang Bertugas':'Tidak Bertugas')
+                        +'</span>'
+                        +'<span class="text-[11px] sm:text-xs text-white/50 hover:text-white transition-colors">Detail →</span>'
+                    +'</div>'
+                +'</div>'
+            +'</div>'
+        +'</div>';
     }).join('');
 }
+
 function showDoc(id){
     var d=doctors.find(function(x){return x.id===id;});if(!d)return;
     var is24=d.shifts==='24h',dayList=is24?'Setiap Hari: 00:00 — 24:00':Array.from(new Set(d.shifts.map(function(s){return DN[s[0]];}))).map(function(k){return k+': '+d.shifts.filter(function(s){return DN[s[0]]===k;}).map(function(s){return SHIFTS[s[1]].label+' '+SHIFTS[s[1]].from+':00–'+SHIFTS[s[1]].to+':00';}).join(', ');}).join('<br>'),pu=docPhoto(d,200);
@@ -706,5 +750,3 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 </body>
 </html>
-
-
