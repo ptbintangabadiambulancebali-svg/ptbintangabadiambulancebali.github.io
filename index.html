@@ -7,6 +7,39 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+
+    <!-- ====== FIREBASE SDK ====== -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+    <!-- ====== FIREBASE INIT ====== -->
+    <script>
+    var useFirebase = false, dbRef = null;
+    try {
+        var firebaseConfig = {
+            apiKey: "AIzaSyADUbmrJMSeF-YKoPEojj_MA5f4tQmYDq4",
+            authDomain: "leonk-bf629.firebaseapp.com",
+            // ⬇️ GANTI INI dengan URL dari step 5 di atas
+            databaseURL: "https://leonk-bf629-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "leonk-bf629",
+            storageBucket: "leonk-bf629.firebasestorage.app",
+            messagingSenderId: "397996286202",
+            appId: "1:397996286202:web:78524329b29b53ee47a943",
+            measurementId: "G-4YELFSJM8D"
+        };
+        firebase.initializeApp(firebaseConfig);
+        if (firebaseConfig.databaseURL && firebaseConfig.databaseURL.indexOf('GANTI') === -1) {
+            dbRef = firebase.database().ref('admin_data');
+            useFirebase = true;
+            console.log('[Firebase] Connected — real-time sync AKTIF');
+        } else {
+            console.warn('[Firebase] databaseURL belum diisi — sync TIDAK AKTIF');
+        }
+    } catch(e) {
+        console.warn('[Firebase] Init gagal:', e.message);
+    }
+    </script>
+
     <style>
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulse-ring{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
@@ -114,32 +147,19 @@
             </div>
            <div class="hidden lg:flex justify-center anim-fade anim-d5">
     <div class="relative anim-float">
-        <!-- GANTI SRC DI BAWAH INI DENGAN PATH GAMBAR AMBULANS ANDA -->
-        <img 
-            src="rute.png" 
-            alt="Ambulans Bintang Abadi" 
-            class="amb-svg w-[720px] h-[480px] object-contain rounded-2xl"
-        >
-        
-        <!-- Badge Unit Aktif -->
+        <img src="rute.png" alt="Ambulans Bintang Abadi" class="amb-svg w-[720px] h-[480px] object-contain rounded-2xl">
         <div class="absolute -top-4 -right-4 glass rounded-2xl p-4 flex items-center gap-3">
             <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="20 6 9 17 4 12"/>
-                </svg>
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
                 <div class="text-white text-sm font-semibold" id="hero-unit-count">5 Unit</div>
                 <div class="text-green-400 text-xs">Ambulans Aktif</div>
             </div>
         </div>
-
-        <!-- Badge Dokter Online -->
         <div class="absolute -bottom-4 -left-4 glass rounded-2xl p-4 flex items-center gap-3">
             <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </div>
             <div>
                 <div class="text-white text-sm font-semibold" id="hero-doc-count">20 Dokter</div>
@@ -189,114 +209,45 @@
 <!-- LAYANAN -->
 <section id="layanan" class="py-24 bg-slate-50">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center sr">
-            <span class="text-xs font-semibold uppercase tracking-wider text-red-600">Pelayanan Kami</span>
-            <h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4 drop-shadow-sm">Layanan Sesuai Visi & Misi</h2>
-        </div>
-        
+        <div class="text-center sr"><span class="text-xs font-semibold uppercase tracking-wider text-red-600">Pelayanan Kami</span><h2 class="text-3xl md:text-4xl font-semibold text-sky-950 tracking-tight mt-4 drop-shadow-sm">Layanan Sesuai Visi & Misi</h2></div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-
-            <!-- Layanan 1: Ambulans Darurat -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]
-                        hover:shadow-[inset_12px_12px_24px_#d1d5db,inset_-12px_-12px_24px_#ffffff]">
-                
-                <!-- Gambar Langsung (Tanpa Box Pembungkus) -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff] hover:shadow-[inset_12px_12px_24px_#d1d5db,inset_-12px_-12px_24px_#ffffff]">
                 <img src="https://media.indozone.id/crop/0x0:0x0/images/2026/03/17/1773746524_69b9395c05c71_download_emergency_services_at_hospital_entrance_with_ambulance_at_dusk_for_free.jpeg" alt="Ambulans Darurat" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Ambulans Darurat</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Respons kurang dari 15 menit. Peralatan BLS/ALS dan tim paramedis tersertifikasi.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">BLS</span>
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">ALS</span>
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">24 Jam</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">BLS</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">ALS</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">24 Jam</span></div>
             </div>
-
-            <!-- Layanan 2: Ambulans Jenazah (UTAMA) -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#fca5a5,inset_-8px_-8px_16px_#ffffff]
-                        border border-red-100">
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#fca5a5,inset_-8px_-8px_16px_#ffffff] border border-red-100">
                 <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-md z-10">UTAMA</div>
-                
-                <!-- Gambar Langsung -->
                 <img src="hero.png" alt="Ambulans Jenazah" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Ambulans Jenazah 24 Jam</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Layanan utama. Pengangkutan jenazah penuh penghormatan, steril, dan profesional sepanjang waktu.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">24 Jam</span>
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">Steril</span>
-                    <span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium drop-shadow-sm">Profesional</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">24 Jam</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">Steril</span><span class="px-3 py-1 text-red-600 text-xs rounded-full font-medium">Profesional</span></div>
             </div>
-
-            <!-- Layanan 3: Pengiriman Antar Pulau -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
-                
-                <!-- Gambar Langsung -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
                 <img src="rute.png" alt="Pengiriman Antar Pulau" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Pengiriman Antar Pulau</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Pengangkutan jenazah via kapal laut. Dokumen lengkap dan pengawasan ketat selama perjalanan.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium drop-shadow-sm">Dokumen Lengkap</span>
-                    <span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium drop-shadow-sm">Antar Pulau</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium">Dokumen Lengkap</span><span class="px-3 py-1 text-blue-600 text-xs rounded-full font-medium">Antar Pulau</span></div>
             </div>
-
-            <!-- Layanan 4: Cargo Udara -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
-                
-                <!-- Gambar Langsung -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
                 <img src="https://www.efratfuneral.com/~img/cargo_jenazah-3d186-3525_167-twebp80.webp" alt="Cargo Udara" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Cargo Udara</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Pengiriman jenazah via pesawat ke seluruh Indonesia. Koordinasi maskapai dan bandara.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium drop-shadow-sm">Seluruh Indonesia</span>
-                    <span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium drop-shadow-sm">Maskapai</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium">Seluruh Indonesia</span><span class="px-3 py-1 text-purple-600 text-xs rounded-full font-medium">Maskapai</span></div>
             </div>
-
-            <!-- Layanan 5: ICU Mobile -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
-                
-                <!-- Gambar Langsung -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
                 <img src="https://media.licdn.com/dms/image/v2/D5612AQE-fHInA5SIHg/article-inline_image-shrink_400_744/B56ZieQSQQHUAg-/0/1755001728983?e=2147483647&v=beta&t=V5hcQJa9lLtdzysyCEikKGB9jodxoHVrNA6iiwJQ-EA" alt="ICU Mobile" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">ICU Mobile</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">ICU bergerak: ventilator, monitor EKG, dan dokter spesialis untuk pasien kritis.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium drop-shadow-sm">Ventilator</span>
-                    <span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium drop-shadow-sm">Spesialis</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium">Ventilator</span><span class="px-3 py-1 text-pink-600 text-xs rounded-full font-medium">Spesialis</span></div>
             </div>
-
-            <!-- Layanan 6: Penyediaan Peti Mati -->
-            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden
-                        bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
-                
-                <!-- Gambar Langsung -->
+            <div class="sr rounded-2xl p-8 transition-all duration-500 group relative overflow-hidden bg-slate-50 shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff]">
                 <img src="https://rumahmebel.id/wp-content/uploads/2022/10/Peti-Mati-Biru-Stanford.webp" alt="Penyediaan Peti Mati" class="w-210 h-210 object-contain drop-shadow-xl mb-6">
-
                 <h3 class="text-xl font-semibold text-sky-950 drop-shadow-sm">Penyediaan Peti Mati</h3>
                 <p class="text-slate-500 leading-relaxed mt-3 text-sm drop-shadow-sm">Kerjasama dengan RS mitra menyediakan peti mati berbagai jenis. Tersedia di lokasi RS tujuan.</p>
-                
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium drop-shadow-sm">Berbagai Jenis</span>
-                    <span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium drop-shadow-sm">Tersedia di RS</span>
-                </div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium">Berbagai Jenis</span><span class="px-3 py-1 text-amber-600 text-xs rounded-full font-medium">Tersedia di RS</span></div>
             </div>
-
         </div>
     </div>
 </section>
@@ -371,23 +322,36 @@
 <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"><div id="detail-content" class="p-6 md:p-8"></div></div></div>
 
 <script>
+/* ===== KONSTANTA ===== */
 var DN=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
 var SHIFTS=[{label:'Pagi',from:7,to:14,color:'bg-amber-100 text-amber-700'},{label:'Siang',from:14,to:21,color:'bg-blue-100 text-blue-700'},{label:'Malam',from:21,to:7,color:'bg-indigo-100 text-indigo-700'}];
-var STORAGE_KEY='bintang_admin',CHANNEL_NAME='bintang_sync',dataVersion=Date.now();
+var STORAGE_KEY='bintang_admin',CHANNEL_NAME='bintang_sync',dataVersion=Date.now(),pageInitialized=false;
 
-/* ===== Helper: ambil gambar RS dari data admin ===== */
+/* ===== HELPER GAMBAR ===== */
 function rsImage(h){
-    if(h.image && h.image.length > 10){
-        if(h.image.startsWith('data:')) return h.image;
-        var x = h.image.indexOf('?') !== -1 ? '&' : '?';
-        return h.image + x + 'v=' + dataVersion;
+    if(h.image&&h.image.length>10){
+        if(h.image.startsWith('data:'))return h.image;
+        var x=h.image.indexOf('?')!==-1?'&':'?';
+        return h.image+x+'v='+dataVersion;
     }
     return null;
 }
+function docPhoto(d,s){
+    if(d.image&&d.image.length>10){
+        if(d.image.startsWith('data:'))return d.image;
+        var x=d.image.indexOf('?')!==-1?'&':'?';
+        return d.image+x+'v='+dataVersion;
+    }
+    return 'https://i.pravatar.cc/'+s+'?img='+(d.av||1);
+}
 
-function docPhoto(d,s){if(d.image&&d.image.length>10){if(d.image.startsWith('data:'))return d.image;var x=d.image.indexOf('?')!==-1?'&':'?';return d.image+x+'v='+dataVersion;}return'https://i.pravatar.cc/'+s+'?img='+(d.av||1);}
-function loadAdminData(){try{var r=localStorage.getItem(STORAGE_KEY);if(r){var d=JSON.parse(r);if(d&&d.doctors&&d.doctors.length&&d.hospitals&&d.hospitals.length)return d;}}catch(e){}return null;}
-var _adminData=loadAdminData(),_fromAdmin=_adminData!==null;
+/* ===== LOAD DARI LOCALSTORAGE (instant, sebagai cache) ===== */
+function loadAdminData(){
+    try{var r=localStorage.getItem(STORAGE_KEY);if(r){var d=JSON.parse(r);if(d&&d.doctors&&d.doctors.length&&d.hospitals&&d.hospitals.length)return d;}}catch(e){}
+    return null;
+}
+
+/* ===== FALLBACK DATA ===== */
 var _fallbackDoctors=[
 {id:1,name:"dr. Andi Pratama, Sp.PD",specialty:"Penyakit Dalam",av:11,sip:"503/01/DKI/2024/001",shifts:[[0,0],[0,1],[2,0],[2,1],[4,0],[4,1]],rs:"RS Bali Mandara",task:"Dokter penanggung jawab IGD dan konsultasi telemedicine.",c:"red"},
 {id:2,name:"dr. Bunga Lestari, Sp.OG",specialty:"Obstetri & Ginekologi",av:5,sip:"503/01/DKI/2024/002",shifts:[[1,0],[1,2],[3,0],[3,1],[5,0],[5,2]],rs:"RS Bunda Denpasar",task:"Penanganan darurat kehamilan dan ambulans neonatal.",c:"pink"},
@@ -437,22 +401,140 @@ var _fallbackExtras=[
 {key:"evakuasi",name:"Evakuasi Medis",desc:"Kecelakaan kerja, bencana alam, evakuasi massal dengan tim terlatih.",color:"orange",image:"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80"},
 {key:"event",name:"Standby Event",desc:"Ambulans standby untuk acara, festival, olahraga, dan kegiatan besar.",color:"teal",image:"https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?w=400&q=80"}
 ];
-var doctors=_adminData?_adminData.doctors:_fallbackDoctors,hospitals=_adminData?_adminData.hospitals:_fallbackHospitals,ambTypes=_adminData?_adminData.ambTypes:_fallbackAmbTypes,ambExtras=_adminData?_adminData.ambExtras:_fallbackExtras,currentRSFilter='all';
 
-function updateDataBadge(ju){var b=document.getElementById('data-badge');if(_fromAdmin){b.className='data-badge bg-green-100 text-green-700 border border-green-200'+(ju?' just-updated':'');b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span> Data Admin &bull; Live';}else{b.className='data-badge bg-amber-100 text-amber-700 border border-amber-200';b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Data Default';}}
+/* ===== DATA GLOBALS (instant dari cache) ===== */
+var _adminData=loadAdminData(), _fromAdmin=_adminData!==null;
+var doctors=_adminData?_adminData.doctors:_fallbackDoctors;
+var hospitals=_adminData?_adminData.hospitals:_fallbackHospitals;
+var ambTypes=_adminData?_adminData.ambTypes:_fallbackAmbTypes;
+var ambExtras=_adminData?_adminData.ambExtras:_fallbackExtras;
+var currentRSFilter='all';
+
+/* ===== UPDATE BADGE STATUS ===== */
+function updateDataBadge(ju){
+    var b=document.getElementById('data-badge');
+    if(!b)return;
+    if(useFirebase&&_fromAdmin){
+        b.className='data-badge bg-green-100 text-green-700 border border-green-200'+(ju?' just-updated':'');
+        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block"></span> Data Admin &bull; Firebase Live';
+    }else if(_fromAdmin){
+        b.className='data-badge bg-blue-100 text-blue-700 border border-blue-200'+(ju?' just-updated':'');
+        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;display:inline-block"></span> Data Admin &bull; Cache';
+    }else{
+        b.className='data-badge bg-amber-100 text-amber-700 border border-amber-200';
+        b.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Data Default';
+    }
+}
 updateDataBadge(false);
 
-function syncLogo(){var logo=_adminData&&_adminData.logo?_adminData.logo:'bintanglogo.png';document.querySelectorAll('.company-logo,.footer-logo').forEach(function(img){if(img.tagName==='IMG'){img.src=logo;img.onerror=function(){this.outerHTML='<div class="w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center anim-siren"><svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="18" r="2"/></svg></div>';};}});}
+/* ===== SYNC LOGO ===== */
+function syncLogo(){
+    var logo=_adminData&&_adminData.logo?_adminData.logo:'bintanglogo.png';
+    document.querySelectorAll('.company-logo,.footer-logo').forEach(function(img){
+        if(img.tagName==='IMG'){img.src=logo;img.onerror=function(){this.outerHTML='<div class="w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center anim-siren"><svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="18" r="2"/></svg></div>';};}
+    });
+}
 
-try{var channel=new BroadcastChannel(CHANNEL_NAME);channel.onmessage=function(e){if(e.data&&e.data.type==='data-updated'){if(window._lr&&Date.now()-window._lr<800)return;window._lr=Date.now();dataVersion=Date.now();var f=loadAdminData();if(f){doctors=f.doctors;hospitals=f.hospitals;ambTypes=f.ambTypes;ambExtras=f.ambExtras;}syncLogo();renderAmbCards();renderRS(currentRSFilter);renderShiftTabs();renderDocs();updateDataBadge(true);var h=document.getElementById('hero-unit-count');if(h)h.textContent=ambTypes.length+' Unit';var d=document.getElementById('hero-doc-count');if(d)d.textContent=doctors.length+' Dokter';refreshFormOptions();showToast('Data diperbarui dari Admin Panel','success');}};}catch(e){}
+/* =============================================================
+   FIREBASE REAL-TIME LISTENER
+   — Menjalankan sekali saat init, lalu otomatis setiap ada perubahan
+   ============================================================= */
+if(useFirebase&&dbRef){
+    dbRef.on('value',function(snap){
+        var d=snap.val();
+        if(!d||!d.doctors||!d.doctors.length||!d.hospitals)return;
 
-function forceRefresh(){location.reload();}
-function refreshFormOptions(){var ft=document.getElementById('form-type');if(!ft)return;var v=ft.value;ft.innerHTML='<option value="">Pilih jenis layanan</option>';ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ft.value=v;var sel=document.getElementById('form-rs');if(!sel)return;var rv=sel.value;sel.innerHTML='<option value="">Pilih RS (opsional)</option>';hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});sel.value=rv;}
+        /* Cek apakah data benar-benar berubah */
+        var oldJson=JSON.stringify(_adminData);
+        var newJson=JSON.stringify(d);
+        if(oldJson===newJson)return;
 
+        console.log('[Firebase] Data berubah — updating...');
+
+        /* Update cache dan globals */
+        localStorage.setItem(STORAGE_KEY,newJson);
+        _adminData=d;
+        _fromAdmin=true;
+        doctors=d.doctors;
+        hospitals=d.hospitals;
+        ambTypes=d.ambTypes||_fallbackAmbTypes;
+        ambExtras=d.ambExtras||_fallbackExtras;
+        dataVersion=Date.now();
+
+        /* Re-render jika halaman sudah siap */
+        if(pageInitialized){
+            syncLogo();
+            renderAmbCards();
+            renderRS(currentRSFilter);
+            renderShiftTabs();
+            renderDocs();
+            updateDataBadge(true);
+            refreshFormOptions();
+            var hc=document.getElementById('hero-unit-count');if(hc)hc.textContent=ambTypes.length+' Unit';
+            var dc=document.getElementById('hero-doc-count');if(dc)dc.textContent=doctors.length+' Dokter';
+            showToast('Data diperbarui dari Admin Panel (Firebase)','success');
+        }
+    });
+}
+
+/* ===== BROADCAST CHANNEL (fallback: cross-tab di browser sama) ===== */
+try{
+    var channel=new BroadcastChannel(CHANNEL_NAME);
+    channel.onmessage=function(e){
+        if(e.data&&e.data.type==='data-updated'){
+            if(window._lr&&Date.now()-window._lr<800)return;
+            window._lr=Date.now();
+            dataVersion=Date.now();
+            var f=loadAdminData();
+            if(f){_adminData=f;_fromAdmin=true;doctors=f.doctors;hospitals=f.hospitals;ambTypes=f.ambTypes;ambExtras=f.ambExtras;}
+            if(pageInitialized){
+                syncLogo();renderAmbCards();renderRS(currentRSFilter);renderShiftTabs();renderDocs();updateDataBadge(true);refreshFormOptions();
+                var hc=document.getElementById('hero-unit-count');if(hc)hc.textContent=ambTypes.length+' Unit';
+                var dc=document.getElementById('hero-doc-count');if(dc)dc.textContent=doctors.length+' Dokter';
+                showToast('Data diperbarui dari Admin Panel','success');
+            }
+        }
+    };
+}catch(e){}
+
+/* ===== FORCE REFRESH — coba Firebase dulu ===== */
+async function forceRefresh(){
+    if(useFirebase&&dbRef){
+        try{
+            var snap=await dbRef.once('value');
+            var d=snap.val();
+            if(d&&d.doctors&&d.doctors.length){
+                localStorage.setItem(STORAGE_KEY,JSON.stringify(d));
+                console.log('[Firebase] Force refresh — data loaded');
+                location.reload();
+                return;
+            }
+        }catch(e){console.warn('[Firebase] Force refresh gagal:',e);}
+    }
+    location.reload();
+}
+
+/* ===== REFRESH FORM OPTIONS ===== */
+function refreshFormOptions(){
+    var ft=document.getElementById('form-type');if(!ft)return;
+    var v=ft.value;
+    ft.innerHTML='<option value="">Pilih jenis layanan</option>';
+    ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
+    ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
+    ft.value=v;
+    var sel=document.getElementById('form-rs');if(!sel)return;
+    var rv=sel.value;
+    sel.innerHTML='<option value="">Pilih RS (opsional)</option>';
+    hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});
+    sel.value=rv;
+}
+
+/* ===== AMB SVG ===== */
 function ambSVG(c,w,h){return '<svg class="amb-svg" width="'+w+'" height="'+h+'" viewBox="0 0 300 200" fill="none"><rect x="20" y="60" width="200" height="90" rx="8" fill="'+c+'"/><rect x="220" y="80" width="50" height="70" rx="6" fill="'+c+'" opacity=".8"/><rect x="30" y="40" width="90" height="50" rx="6" fill="#F8FAFC"/><rect x="40" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="80" y="46" width="35" height="35" rx="4" fill="#BFDBFE"/><rect x="110" y="85" width="55" height="14" rx="3" fill="white"/><rect x="130" y="72" width="14" height="40" rx="3" fill="white"/><rect x="20" y="130" width="200" height="5" fill="#FBBF24" opacity=".7"/><rect x="220" y="130" width="50" height="5" fill="#FBBF24" opacity=".7"/><circle cx="75" cy="155" r="20" fill="#1E293B"/><circle cx="75" cy="155" r="13" fill="#475569"/><circle cx="75" cy="155" r="4" fill="#94A3B8"/><circle cx="220" cy="155" r="20" fill="#1E293B"/><circle cx="220" cy="155" r="13" fill="#475569"/><circle cx="220" cy="155" r="4" fill="#94A3B8"/><text x="120" y="125" font-family="Inter" font-size="8" font-weight="700" fill="white" text-anchor="middle">BINTANG ABADI</text></svg>';}
 
 function extIcon(color){var i={blue:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 21l1-4 9.5-9.5"/><path d="M17 8l-4-4 4-4 4 4-4 4z"/></svg>',purple:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',orange:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',teal:'<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'};return i[color]||i.blue;}
 
+/* ===== RENDER AMBULANCE CARDS ===== */
 function renderAmbCards(){
     document.getElementById('amb-cards').innerHTML=ambTypes.map(function(a){
         var hasImage=a.image&&a.image.length>10;
@@ -492,7 +574,9 @@ function getShiftLabel(d,di){if(d.shifts==='24h')return '24 Jam';return d.shifts
 function getShiftTime(d,di){if(d.shifts==='24h')return '00:00 — 24:00';return d.shifts.filter(function(s){return s[0]===di;}).map(function(s){return SHIFTS[s[1]].from+':00 — '+SHIFTS[s[1]].to+':00';}).join(' | ');}
 function switchDay(d){selectedDay=d;selectedShift=getCurrentShift();document.querySelectorAll('#day-tabs button').forEach(function(b,i){b.classList.toggle('tab-active',i===d);b.classList.toggle('bg-white/10',i!==d);b.classList.toggle('text-white/70',i!==d);});renderShiftTabs();renderDocs();}
 function switchShift(s){selectedShift=s;document.querySelectorAll('#shift-tabs button').forEach(function(b,i){b.classList.toggle('shift-active',i===s);});renderDocs();}
-function renderShiftTabs(){document.getElementById('shift-tabs').innerHTML=SHIFTS.map(function(s,i){return '<button onclick="switchShift('+i+')" class="shift-tag border '+s.color+' '+(i===selectedShift?'shift-active':'hover:opacity-80')+'" style="'+(i===selectedShift?'':'border-color:transparent;')+'">'+s.label+' ('+s.from+':00–'+s.to+':00)</button>';}).join('')+'<button onclick="switchShift(-1)" class="shift-tag border '+(selectedShift===-1?'shift-active':'bg-white/10 text-white/70 hover:bg-white/20 border-transparent hover:opacity-80')+'" style="'+(selectedShift===-1?'':'border-color:transparent;')+'">Semua</button>';}
+function renderShiftTabs(){
+    document.getElementById('shift-tabs').innerHTML=SHIFTS.map(function(s,i){return '<button onclick="switchShift('+i+')" class="shift-tag border '+s.color+' '+(i===selectedShift?'shift-active':'hover:opacity-80')+'" style="'+(i===selectedShift?'':'border-color:transparent;')+'">'+s.label+' ('+s.from+':00–'+s.to+':00)</button>';}).join('')+'<button onclick="switchShift(-1)" class="shift-tag border '+(selectedShift===-1?'shift-active':'bg-white/10 text-white/70 hover:bg-white/20 border-transparent hover:opacity-80')+'" style="'+(selectedShift===-1?'':'border-color:transparent;')+'">Semua</button>';
+}
 function renderDocs(){
     var g=document.getElementById('doc-grid'),f;
     if(selectedShift===-1){f=doctors.filter(function(d){return d.shifts==='24h'||d.shifts.some(function(s){return s[0]===selectedDay;});});}
@@ -519,10 +603,11 @@ function showDoc(id){
         +'<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Jadwal Lengkap</div><p class="text-sm text-sky-950 leading-relaxed">'+dayList+'</p></div>'
         +'<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs text-slate-500 mb-1">RS Penempatan</div><p class="text-sm font-medium text-sky-950">'+d.rs+'</p></div>'
         +'<div class="flex items-center gap-2 p-3 '+(is24?'bg-green-50 border-green-200':'bg-blue-50 border-blue-200')+' border rounded-xl"><span class="w-2 h-2 '+(is24?'bg-green-500':'bg-blue-500')+' rounded-full animate-pulse"></span><span class="text-sm '+(is24?'text-green-700':'text-blue-700')+' font-medium">Status: '+(is24?'Siaga 24 Jam':'Online')+'</span></div></div>';
-    document.getElementById('detail-modal').classList.remove('hidden');document.body.style.overflow='hidden';
+    document.getElementById('detail-modal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
 }
 
-/* ===== RS MITRA — mendukung gambar dari admin ===== */
+/* ===== RS MITRA ===== */
 function renderRS(filter){
     currentRSFilter=filter;
     var g=document.getElementById('rs-grid');
@@ -531,19 +616,16 @@ function renderRS(filter){
     var fallbackSvg=ambSVG('#64748B',300,160);
 
     g.innerHTML=f.map(function(h){
-        var imgSrc=rsImage(h); // null jika tidak ada gambar dari admin
+        var imgSrc=rsImage(h);
         var hasRealImg=!!imgSrc;
-
-        // Bangun area visual: gambar admin jika ada, fallback SVG jika tidak
         var visualInner;
         if(hasRealImg){
             visualInner='<img src="'+imgSrc+'" alt="'+h.name+'" class="rs-real-img rs-new-img" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
                 +'<div class="rs-fallback bg-gradient-to-br from-slate-100 to-slate-200" style="display:none">'+fallbackSvg+'</div>';
-        } else {
+        }else{
             visualInner='<div class="rs-fallback bg-gradient-to-br from-slate-100 to-slate-200">'+fallbackSvg+'</div>';
         }
-
-        var dl=(h.docs||[]).map(function(i){return doctors.find(function(d){return d.id===i;});}).filter(Boolean);
+        var dl=(h.docs||[]).map(function(i){return doctors.find(function(dd){return dd.id===i;});}).filter(Boolean);
         return '<div class="sr rs-card-wrap bg-white rounded-2xl border border-slate-100 hover:border-red-200 hover:shadow-xl transition-all duration-300 overflow-hidden">'
             +'<div class="rs-card-visual h-48 relative rounded-t-2xl overflow-hidden">'
             +visualInner
@@ -563,36 +645,136 @@ function renderRS(filter){
     g.querySelectorAll('.sr').forEach(function(el){observer.observe(el);});
 }
 
-function filterRS(f){document.querySelectorAll('.rsf').forEach(function(b){b.classList.toggle('bg-sky-950',b.dataset.f===f);b.classList.toggle('text-white',b.dataset.f===f);b.classList.toggle('bg-slate-100',b.dataset.f!==f);b.classList.toggle('text-slate-600',b.dataset.f!==f);});renderRS(f);}
+function filterRS(f){
+    document.querySelectorAll('.rsf').forEach(function(b){
+        b.classList.toggle('bg-sky-950',b.dataset.f===f);
+        b.classList.toggle('text-white',b.dataset.f===f);
+        b.classList.toggle('bg-slate-100',b.dataset.f!==f);
+        b.classList.toggle('text-slate-600',b.dataset.f!==f);
+    });
+    renderRS(f);
+}
 
 /* ===== MODALS & UTILS ===== */
-function openOrderModal(t){document.getElementById('order-modal').classList.remove('hidden');document.body.style.overflow='hidden';if(t)document.getElementById('form-type').value=t;}
-function closeOrderModal(){document.getElementById('order-modal').classList.add('hidden');document.body.style.overflow='';}
-function closeDetailModal(){document.getElementById('detail-modal').classList.add('hidden');document.body.style.overflow='';}
-function submitOrder(e){e.preventDefault();var b=document.getElementById('submit-btn');b.textContent='Memproses...';b.disabled=true;setTimeout(function(){closeOrderModal();document.getElementById('order-form').reset();b.textContent='Konfirmasi Pesanan';b.disabled=false;showToast('Pesanan berhasil dikirim! Tim kami menghubungi Anda dalam 2 menit.','success');},2000);}
-function showToast(msg,type){var c=document.getElementById('toast-container'),t=document.createElement('div');var bg=type==='success'?'bg-green-600':'bg-red-600';var icon=type==='success'?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';t.className='toast '+bg+' text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm';t.innerHTML='<svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">'+icon+'</svg><p class="text-sm font-medium">'+msg+'</p>';c.appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(40px)';t.style.transition='all .3s';setTimeout(function(){t.remove();},300);},5000);}
+function openOrderModal(t){
+    document.getElementById('order-modal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    if(t)document.getElementById('form-type').value=t;
+}
+function closeOrderModal(){
+    document.getElementById('order-modal').classList.add('hidden');
+    document.body.style.overflow='';
+}
+function closeDetailModal(){
+    document.getElementById('detail-modal').classList.add('hidden');
+    document.body.style.overflow='';
+}
+function submitOrder(e){
+    e.preventDefault();
+    var b=document.getElementById('submit-btn');
+    b.textContent='Memproses...';
+    b.disabled=true;
+    setTimeout(function(){
+        closeOrderModal();
+        document.getElementById('order-form').reset();
+        b.textContent='Konfirmasi Pesanan';
+        b.disabled=false;
+        showToast('Pesanan berhasil dikirim! Tim kami menghubungi Anda dalam 2 menit.','success');
+    },2000);
+}
+function showToast(msg,type){
+    var c=document.getElementById('toast-container'),t=document.createElement('div');
+    var bg=type==='success'?'bg-green-600':'bg-red-600';
+    var icon=type==='success'?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+    t.className='toast '+bg+' text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm';
+    t.innerHTML='<svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">'+icon+'</svg><p class="text-sm font-medium">'+msg+'</p>';
+    c.appendChild(t);
+    setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(40px)';t.style.transition='all .3s';setTimeout(function(){t.remove();},300);},5000);
+}
 function toggleMobileMenu(){document.getElementById('mobile-menu').classList.toggle('hidden');}
 function closeMobileMenu(){document.getElementById('mobile-menu').classList.add('hidden');}
-function updateClock(){var n=new Date(),hh=String(n.getHours()).padStart(2,'0'),mm=String(n.getMinutes()).padStart(2,'0'),ss=String(n.getSeconds()).padStart(2,'0');document.getElementById('clock-display').innerHTML='<div class="inline-flex items-center gap-3 glass rounded-full px-6 py-3"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span><span class="text-white font-mono text-lg font-semibold">'+hh+':'+mm+':'+ss+'</span><span class="text-slate-400 text-sm">WITA — '+DN[n.getDay()===0?6:n.getDay()-1]+'</span></div>';}
 
-var observer=new IntersectionObserver(function(entries){entries.forEach(function(x){if(x.isIntersecting)x.target.classList.add('revealed');});},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
-window.addEventListener('scroll',function(){var n=document.getElementById('navbar');n.classList.toggle('bg-sky-950/95',window.scrollY>50);n.classList.toggle('backdrop-blur-md',window.scrollY>50);n.classList.toggle('shadow-lg',window.scrollY>50);});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrderModal();closeDetailModal();}});
+function updateClock(){
+    var n=new Date(),
+        hh=String(n.getHours()).padStart(2,'0'),
+        mm=String(n.getMinutes()).padStart(2,'0'),
+        ss=String(n.getSeconds()).padStart(2,'0'),
+        dayIdx=n.getDay()===0?6:n.getDay()-1;
+    document.getElementById('clock-display').innerHTML='<div class="inline-flex items-center gap-3 glass rounded-full px-6 py-3"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span><span class="text-white font-mono text-lg font-semibold">'+hh+':'+mm+':'+ss+'</span><span class="text-slate-400 text-sm">WITA — '+DN[dayIdx]+'</span></div>';
+}
 
-/* ===== INIT ===== */
+/* ===== SCROLL REVEAL OBSERVER ===== */
+var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(x){if(x.isIntersecting)x.target.classList.add('revealed');});
+},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+
+/* ===== NAVBAR SCROLL ===== */
+window.addEventListener('scroll',function(){
+    var n=document.getElementById('navbar');
+    n.classList.toggle('bg-sky-950/95',window.scrollY>50);
+    n.classList.toggle('backdrop-blur-md',window.scrollY>50);
+    n.classList.toggle('shadow-lg',window.scrollY>50);
+});
+
+/* ===== ESC KEY ===== */
+document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){closeOrderModal();closeDetailModal();}
+});
+
+/* =============================================================
+   INIT — dijalankan setelah DOM siap
+   ============================================================= */
 document.addEventListener('DOMContentLoaded',function(){
+    /* Reveal semua elemen .sr */
     document.querySelectorAll('.sr').forEach(function(el){observer.observe(el);});
+
+    /* Set hari & shift hari ini */
     var td=new Date().getDay(),today=td===0?6:td-1;
-    selectedDay=today;selectedShift=getCurrentShift();
-    document.getElementById('day-tabs').innerHTML=DN.map(function(n,i){return '<button onclick="switchDay('+i+')" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all '+(i===today?'tab-active':'bg-white/10 text-white/70 hover:bg-white/20')+'" data-day="'+i+'">'+n+'</button>';}).join('');
-    renderShiftTabs();renderDocs();
-    document.getElementById('rs-filters').innerHTML='<button onclick="filterRS(\'all\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-sky-950 text-white" data-f="all">Semua</button><button onclick="filterRS(\'tipe-a\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-a">Tipe A</button><button onclick="filterRS(\'tipe-b\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-b">Tipe B</button><button onclick="filterRS(\'tipe-c\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-c">Tipe C</button><button onclick="filterRS(\'spesialis\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="spesialis">Spesialis</button>';
-    renderRS('all');renderAmbCards();updateClock();setInterval(updateClock,1000);
-    var ft=document.getElementById('form-type');ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
-    var sel=document.getElementById('form-rs');hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});
+    selectedDay=today;
+    selectedShift=getCurrentShift();
+
+    /* Render day tabs */
+    document.getElementById('day-tabs').innerHTML=DN.map(function(n,i){
+        return '<button onclick="switchDay('+i+')" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all '+(i===today?'tab-active':'bg-white/10 text-white/70 hover:bg-white/20')+'" data-day="'+i+'">'+n+'</button>';
+    }).join('');
+
+    /* Render shift tabs, dokter */
+    renderShiftTabs();
+    renderDocs();
+
+    /* Render RS filters */
+    document.getElementById('rs-filters').innerHTML=
+        '<button onclick="filterRS(\'all\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-sky-950 text-white" data-f="all">Semua</button>'
+        +'<button onclick="filterRS(\'tipe-a\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-a">Tipe A</button>'
+        +'<button onclick="filterRS(\'tipe-b\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-b">Tipe B</button>'
+        +'<button onclick="filterRS(\'tipe-c\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="tipe-c">Tipe C</button>'
+        +'<button onclick="filterRS(\'spesialis\')" class="rsf px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-f="spesialis">Spesialis</button>';
+
+    /* Render semua section */
+    renderRS('all');
+    renderAmbCards();
+
+    /* Jam real-time */
+    updateClock();
+    setInterval(updateClock,1000);
+
+    /* Isi form options */
+    var ft=document.getElementById('form-type');
+    ambTypes.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
+    ambExtras.forEach(function(a){var o=document.createElement('option');o.value=a.key;o.textContent=a.name;ft.appendChild(o);});
+    var sel=document.getElementById('form-rs');
+    hospitals.forEach(function(h){var o=document.createElement('option');o.value=h.name;o.textContent=h.name+(h.peti?' (✓ Peti Mati)':'');sel.appendChild(o);});
+
+    /* Sync logo */
     syncLogo();
+
+    /* Update hero counters */
     var hc=document.getElementById('hero-unit-count');if(hc)hc.textContent=ambTypes.length+' Unit';
     var dc=document.getElementById('hero-doc-count');if(dc)dc.textContent=doctors.length+' Dokter';
+
+    /* Tandai halaman sudah siap (supaya Firebase listener bisa re-render) */
+    pageInitialized=true;
+    updateDataBadge(false);
 });
 </script>
 </body>
