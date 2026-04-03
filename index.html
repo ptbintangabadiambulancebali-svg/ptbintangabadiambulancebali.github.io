@@ -40,7 +40,7 @@
         @keyframes slide-in-right{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
         @keyframes data-pulse{0%,100%{opacity:1}50%{opacity:.5}}
         @keyframes photo-flash{0%{opacity:.3;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
-        /* DIHAPUS: @keyframes drv-scroll tidak diperlukan lagi karena grid */
+        @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         
         /* Utility Classes */
         .anim-fade{animation:fadeInUp .8s ease-out forwards}
@@ -92,8 +92,6 @@
         .rs-card-visual .rs-badge-layer{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;padding:12px}
         .rs-new-img{animation:photo-flash .7s ease-out}
         
-        /* DIHAPUS: .drv-scroll-wrap, .drv-scroll-track, .drv-card styles yang lama */
-        
         /* STYLE BARU: Grid Driver Card mirip Dokter */
         .drv-grid-card {
             background: white;
@@ -129,9 +127,71 @@
             justify-content: space-between;
             background: #fff;
         }
+
+        /* MAINTENANCE OVERLAY STYLES */
+        #maintenance-overlay {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
     </style>
 </head>
 <body class="font-sans bg-white text-slate-900 antialiased">
+
+<!-- MAINTENANCE OVERLAY (Hidden by default) -->
+<div id="maintenance-overlay" class="fixed inset-0 z-[999] hidden flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+    <div class="max-w-2xl w-full mx-auto anim-fade">
+        <!-- Animated Icon -->
+        <div class="w-24 h-24 mx-auto mb-8 relative flex items-center justify-center">
+            <div class="absolute inset-0 border-4 border-red-500/20 rounded-full animate-ping"></div>
+            <div class="relative w-20 h-20 bg-red-600/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-red-500/30">
+                <svg class="w-10 h-10 text-red-500 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Text Content -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Sedang Dalam Maintenance</h1>
+        
+        <p class="text-slate-300 text-lg sm:text-xl leading-relaxed mb-10 max-w-lg mx-auto">
+            Kami sedang melakukan pemeliharaan sistem untuk meningkatkan layanan. Mohon kembali beberapa saat lagi.
+        </p>
+
+        <!-- Estimation Card -->
+        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-10 inline-block w-full max-w-sm">
+            <div class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-2">Estimasi Selesai</div>
+            <div class="text-3xl font-bold text-white flex items-center justify-center gap-3">
+                30 Menit
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mb-12">
+            <p class="text-slate-400 mb-4 font-medium">Butuh bantuan segera?</p>
+            <a href="https://wa.me/6285176920291?text=Halo%20Admin%2C%20saya%20mau%20tanya%20tentang%20maintenance." target="_blank" class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-green-600/30">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Hubungi via WhatsApp
+            </a>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="flex flex-col items-center opacity-50 hover:opacity-100 transition-opacity duration-300">
+            <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mb-3 shadow-lg shadow-red-600/40">
+                <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/>
+                    <circle cx="18" cy="16" r="2"/>
+                    <circle cx="6" cy="18" r="2"/>
+                </svg>
+            </div>
+            <div class="text-white font-bold text-lg tracking-wide">PT. Bintang Abadi</div>
+            <div class="text-slate-400 text-xs uppercase tracking-widest mt-1">Ambulance Service</div>
+        </div>
+    </div>
+</div>
 
 <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3"></div>
 <div id="data-badge" class="data-badge hidden" onclick="forceRefresh()" title="Klik untuk refresh data dari Admin"></div>
@@ -267,7 +327,7 @@
                 <div class="mt-6 sm:mt-8 space-y-4 sm:space-y-5">
                     <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center"><svg class="w-5 h-5 text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                            <div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center"><svg class="w-5 h-5 text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-11 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
                             <h3 class="text-lg font-semibold text-sky-950">Visi</h3>
                         </div>
                         <p class="text-slate-600 leading-relaxed text-sm sm:text-base">Menjadi layanan ambulance terpercaya di Indonesia yang mengutamakan kecepatan, ketepatan, dan penghormatan dalam setiap pelayanan.</p>
@@ -537,6 +597,24 @@ var CHANNEL_NAME = 'bintang_sync';
 var dataVersion = Date.now();
 var pageInitialized = false;
 
+/* ===== MAINTENANCE MODE FUNCTION ===== */
+function checkMaintenanceMode(data) {
+    var overlay = document.getElementById('maintenance-overlay');
+    var bodyContent = document.body; 
+    
+    // Jika data memiliki properti isMaintenance = true
+    if (data && data.isMaintenance === true) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        document.body.style.overflow = 'hidden'; // Stop scrolling main page
+        // Opsional: Sembunyikan elemen lain agar performa lebih baik (diblokir oleh z-index overlay sih sebenarnya cukup)
+    } else {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
 function rsImage(h) {
     if (h.image && h.image.length > 10) {
         if (h.image.startsWith('data:')) return h.image;
@@ -675,6 +753,9 @@ function syncLogo() {
 if (useFirebase && dbRef) {
     dbRef.on('value', function(snap) {
         var d = snap.val();
+        // CEK MAINTENANCE MODE DULU SEBELUM UPDATE LAINNYA
+        checkMaintenanceMode(d);
+
         if (!d || !d.doctors || !d.doctors.length || !d.hospitals) return;
         if (JSON.stringify(_adminData) === JSON.stringify(d)) return;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
@@ -692,7 +773,7 @@ if (useFirebase && dbRef) {
             renderRS(currentRSFilter);
             renderShiftTabs();
             renderDocs();
-            renderDrvGrid(); // Diubah dari renderDrvScroll
+            renderDrvGrid(); 
             updateDataBadge(true);
             refreshFormOptions();
             updateHeroCounts();
@@ -717,6 +798,9 @@ try {
                 ambTypes = f.ambTypes || _fallbackAmbTypes;
                 ambExtras = f.ambExtras || _fallbackExtras;
                 drivers = (f.drivers && f.drivers.length) ? f.drivers : _fallbackDrivers;
+                
+                // Broadcast check
+                checkMaintenanceMode(f);
             }
             if (pageInitialized) {
                 syncLogo();
@@ -724,7 +808,7 @@ try {
                 renderRS(currentRSFilter);
                 renderShiftTabs();
                 renderDocs();
-                renderDrvGrid(); // Diubah dari renderDrvScroll
+                renderDrvGrid();
                 updateDataBadge(true);
                 refreshFormOptions();
                 updateHeroCounts();
@@ -741,6 +825,7 @@ async function forceRefresh() {
             var d = snap.val();
             if (d && d.doctors && d.doctors.length) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+                checkMaintenanceMode(d); // Cek saat refresh
                 location.reload();
                 return;
             }
@@ -949,7 +1034,7 @@ function showDoc(id) {
         '<div class="space-y-4">' +
             '<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tugas</div><p class="text-slate-700 text-sm leading-relaxed">' + d.task + '</p></div>' +
             '<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Jadwal Lengkap</div><p class="text-sm text-sky-950 leading-relaxed">' + dayList + '</p></div>' +
-            '<div class="bg-slate-50 rounded-xl p-4"><div class="text-xs text-slate-500 mb-1">RS Penempatan</div><p class="text-sm font-medium text-sky-950">' + d.rs + '</p></div>' +
+            '<div class="bg-slate-50 rounded-xl p-4"><div class="text-[10px] text-slate-500 mb-1">RS Penempatan</div><p class="text-sm font-medium text-sky-950">' + d.rs + '</p></div>' +
             '<div class="flex items-center gap-2 p-3 ' + (is24 ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200') + ' border rounded-xl"><span class="w-2 h-2 ' + (is24 ? 'bg-green-500' : 'bg-blue-500') + ' rounded-full animate-pulse"></span><span class="text-sm ' + (is24 ? 'text-green-700' : 'text-blue-700') + ' font-medium">Status: ' + (is24 ? 'Siaga 24 Jam' : 'Online') + '</span></div>' +
         '</div>';
     document.getElementById('detail-modal').classList.remove('hidden');
@@ -1033,8 +1118,6 @@ function renderDrvGrid() {
             '</div>' +
         '</div>';
     }).join('');
-    
-    g.innerHTML = htmlContent;
 }
 
 function showDriver(id) {
@@ -1316,6 +1399,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Diubah: Render Driver Grid
     renderDrvStats();
     renderDrvGrid();
+
+    // Check maintenance mode on initial load (from localstorage or default false)
+    checkMaintenanceMode(_adminData);
 
     pageInitialized = true;
     updateDataBadge(false);
