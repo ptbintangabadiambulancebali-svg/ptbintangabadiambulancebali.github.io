@@ -602,8 +602,8 @@ function checkMaintenanceMode(data) {
     var overlay = document.getElementById('maintenance-overlay');
     var bodyContent = document.body; 
     
-    // Jika data memiliki properti isMaintenance = true
-    if (data && data.isMaintenance === true) {
+    // Jika data memiliki properti maintenanceMode = true
+    if (data && data.maintenanceMode === true) { 
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
         document.body.style.overflow = 'hidden'; // Stop scrolling main page
