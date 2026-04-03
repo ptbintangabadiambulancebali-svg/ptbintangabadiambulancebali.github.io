@@ -56,7 +56,7 @@
         /* Glass Effect */
         .glass{background:rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18)}
         .glass-light{background:rgba(255,255,255,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(226,232,240,.5)}
-        .glass-dark{background:rgba(8,47,73,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1)}
+        .glass-dark{background:rgba(21, 34, 44, 0.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1)}
 
         .siren-dot{position:relative}
         .siren-dot::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:#DC2626;animation:pulse-ring 1.5s ease-out infinite}
@@ -130,7 +130,7 @@
 
         /* MAINTENANCE OVERLAY STYLES */
         #maintenance-overlay {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #273a67fe 0%, #fefefe 100%);
         }
 
         /* SIREN MAINTENANCE EFFECT - 3 LAYER */
@@ -168,7 +168,7 @@
 <div id="maintenance-overlay" class="fixed inset-0 z-[999] hidden flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
     <!-- Background Gambar Peralatan Ambulans -->
     <div class="absolute inset-0 z-0">
-        <img src="https://imajeed.net/author/kassem/" class="absolute inset-0 w-full h-full object-cover opacity-20 scale-110" alt="">
+        <img src="" class="absolute inset-0 w-full h-full object-cover opacity-20 scale-110" alt="">
         <div class="absolute inset-0 bg-gradient-to-b from-sky-950/95 via-slate-900/92 to-sky-950/95"></div>
     </div>
 
@@ -190,16 +190,16 @@
         </div>
 
         <!-- Text Content -->
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">MAINTENANCE</h1>
+        <h1 class="text-3xl sm:text-1xl md:text-1xl font-extrabold text-white mb-1 tracking-tight">MAINTENANCE</h1>
         
-        <p class="text-slate-300 text-lg sm:text-xl leading-relaxed mb-10 max-w-lg mx-auto">
-            ⚠️ Pemberitahuan Pemeliharaan Sistem
+        <p class="text-slate-100 text-base sm:text-xl leading-relaxed mb-2 max-w-lg mx-auto">
+            Pemberitahuan Pemeliharaan Sistem.
             Saat ini layanan sedang dalam proses pemeliharaan (maintenance) untuk peningkatan kualitas layanan. Selama proses ini, aplikasi mungkin tidak dapat diakses sementara. Mohon maaf atas ketidaknyamanan ini.
         </p>
 
         <!-- Realtime Clock Card -->
         <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-10 inline-block w-full max-w-sm">
-            <div class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-2">PT. Bali Global Trans</div>
+            <div class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-2"></div>
             <div class="text-3xl font-bold text-white flex items-center justify-center gap-3" id="maint-clock">
                 --:--:--
             </div>
